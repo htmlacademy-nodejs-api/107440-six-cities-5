@@ -1,7 +1,7 @@
 # Личный проект «Шесть городов»
 
-* Студент: [Anton Paskanny](https://up.htmlacademy.ru/nodejs-api/5/user/107440).
-* Наставник: `Неизвестно`.
+- Студент: [Anton Paskanny](https://up.htmlacademy.ru/nodejs-api/5/user/107440).
+- Наставник: [Yaroslav Denisenko](https://htmlacademy.ru/profile/id2412489).
 
 ---
 
