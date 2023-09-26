@@ -29,7 +29,7 @@
   },
   "include": [
     "src/**/*.ts"
-  ],
+, "src/cli/commands/command.interface.ts"  ],
   "exclude": [
     "node_modules",
     "**/*.test.ts"
