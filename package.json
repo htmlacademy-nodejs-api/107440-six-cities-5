@@ -15,7 +15,6 @@
     "lint:fix": "eslint --fix --ext .ts",
     "compile": "tsc -p tsconfig.json",
     "clean": "rimraf dist",
-    "clean:node_modules": "rimraf node_modules",
     "prettier:format": "prettier --config .prettierrc . --write",
     "ts": "ts-node",
     "mock:server": "json-server ./mocks/mock-server-data.json --port 5173"
