@@ -1,0 +1,77 @@
+{
+  "api": {
+    "titles": [
+      "Wood and stone cozy place",
+      "Nice cozy warm big bed apartment",
+      "Forest Barns with a hot tub",
+      "Villa Rita on the Beach: sea view flat",
+      "Seafront apartment with views in SeaClub Voramar",
+      "Hideaway Crikvenica with Sea View and Private Pool",
+      "Le Charming Montmartre"
+    ],
+    "descriptions": [
+      "Located in the coastal village of Å in the Lofoten Archipelago, this inn offers traditional Norwegian fisherman's cabins",
+      "Lofoten Fishing has mountain views, free Wifi and free private parking, located in Å",
+      "Located on the beach of the beautiful gulf between Palermo and Cefalù, with direct access to the sea, Villa Rita is the best place for a holiday dedicated to relaxation and the magnificent sea of Sicily.",
+      "Forest Barns are perfect for rest, for CHILLOUT with views of the Tatras Mountains and Gorce",
+      "Experience a seascape at the Seaview Apartment in Aparthotel Voramar, boasting a double bedroom. Each well-appointed suite features a private kitchen within the living space, and is equipped with air conditioning.",
+      "Surround yourself with Blissful Turquoise ofyour Private Pool while overlooking the Deep Blues of the Mediterranean.",
+      "This beautiful 2 room apartment is located at the foot of the famous village of Montmartre. A great place of history, this neighborhood is known for its charm, quality shops, and tourist and romantic places."
+    ],
+    "cities": [
+      "Oslo",
+      "Stockholm",
+      "Warsaw",
+      "Rome",
+      "Madrid",
+      "Zagreb",
+      "Paris"
+    ],
+    "previewImages": [
+      "modern-real-estate.jpg",
+      "old-real-estate.jpg",
+      "preview-1.jpg",
+      "preview-2.jpg",
+      "preview-3.jpg",
+      "preview-4.jpg",
+      "preview-5.jpg"
+    ],
+    "galleryImages": [
+      "room.jpg.jpg",
+      "bathroom.jpg",
+      "city-view.jpg",
+      "two-bedrooms-toom.jpg",
+      "balcony.jpg",
+      "barn.jpg",
+      "hot-tube.jpg"
+    ],
+    "authors": [
+      "John Lennon",
+      "Kurt Cobain",
+      "Egor Letov",
+      "Bob Marley",
+      "Amy Whinehouse",
+      "Michael Jackson",
+      "Madonna"
+    ],
+    "emails": [
+      "snow@pisem.local",
+      "president@dka.local",
+      "fish@big.local",
+      "test@pisem.local",
+      "freedom@pisem.local",
+      "rolan@pochta.local",
+      "author@mir.local",
+      "test@lost.loca",
+      "kujo-fan@story.local"
+    ],
+    "avatars": [
+      "selfie.jpg",
+      "selife-2.jpg",
+      "awesome-avatar.jpg",
+      "with-glasses-avatar.jpg",
+      "cool-hat-avatar.jpg",
+      "I-m-bold-avatar.jpg"
+    ]
+  }
+}

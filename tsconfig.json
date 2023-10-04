@@ -8,6 +8,7 @@
     "noImplicitAny": true,
     "strictNullChecks": true,
     "strictFunctionTypes": true,
+    "strictPropertyInitialization": false,
     "noUnusedLocals": true,
     "noUnusedParameters": true,
     "noImplicitReturns": true,
@@ -28,8 +29,9 @@
     ]
   },
   "include": [
-    "src/**/*.ts"
-, "src/cli/commands/command.interface.ts"  ],
+    "src/**/*.ts",
+    "src/cli/commands/command.interface.ts"
+  ],
   "exclude": [
     "node_modules",
     "**/*.test.ts"
