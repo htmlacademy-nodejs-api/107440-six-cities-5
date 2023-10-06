@@ -39,8 +39,9 @@
   },
   "dependencies": {
     "chalk": "5.3.0",
-    "dayjs": "^1.11.10",
-    "got": "^13.0.0",
-    "json-server": "^0.17.4"
+    "dayjs": "1.11.10",
+    "got": "13.0.0",
+    "json-server": "0.17.4",
+    "pino": "8.15.6"
   }
 }
