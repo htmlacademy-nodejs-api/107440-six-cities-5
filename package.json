@@ -48,7 +48,9 @@
     "dayjs": "1.11.10",
     "dotenv": "16.3.1",
     "got": "13.0.0",
+    "inversify": "6.0.1",
     "json-server": "0.17.4",
-    "pino": "8.15.6"
+    "pino": "8.15.6",
+    "reflect-metadata": "0.1.13"
   }
 }
