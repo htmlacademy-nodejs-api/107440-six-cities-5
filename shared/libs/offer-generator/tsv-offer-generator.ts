@@ -1,6 +1,12 @@
 import dayjs from 'dayjs';
 import { OfferGenerator } from './offer-generator.interface.js';
-import { MockServerData, HouseType, FeatureType } from '../../types/index.js';
+import {
+  MockServerData,
+  HouseType,
+  FeatureType,
+  City,
+  UserType
+} from '../../types/index.js';
 import {
   generateRandomValue,
   getRandomItem,
@@ -29,10 +35,11 @@ export class TSVOfferGenerator implements OfferGenerator {
 
   public generate(): string {
     const title = getRandomItem<string>(this.mockData.titles);
-    const city = getRandomItem<string>(this.mockData.cities);
+    const city = getRandomItem<City>(this.mockData.cities);
     const description = getRandomItem<string>(this.mockData.descriptions);
-    const photo = getRandomItem<string>(this.mockData.previewImages);
-    const featureType = getRandomItems<string>([
+    const preview = getRandomItem<string>(this.mockData.previewImages);
+    const images = getRandomItems<string>(this.mockData.galleryImages);
+    const features = getRandomItems<string>([
       FeatureType.AirCond,
       FeatureType.BabySeat,
       FeatureType.Breakfast,
@@ -55,10 +62,8 @@ export class TSVOfferGenerator implements OfferGenerator {
     const rating = generateRandomValue(MIN_RATING, MAX_RATING, 1).toString();
     const author = getRandomItem<string>(this.mockData.authors);
     const email = getRandomItem<string>(this.mockData.emails);
-    const avatar = getRandomItem<string>(this.mockData.avatars);
-    const comments = generateRandomValue(0, 50);
-    const latitude = generateRandomValue(0, 50, 10);
-    const longitude = generateRandomValue(0, 50, 10);
+    const avatarPath = getRandomItem<string>(this.mockData.avatars);
+    const commentCount = generateRandomValue(0, 50);
 
     const publishedDate = dayjs()
       .subtract(generateRandomValue(FIRST_WEEK_DAY, LAST_WEEK_DAY), 'day')
@@ -66,27 +71,33 @@ export class TSVOfferGenerator implements OfferGenerator {
 
     const [firstname, lastname] = author.split(' ');
 
+    const userType = getRandomItem<string>([UserType.Pro, UserType.Usual]);
+
+    const { name, latitude, longitude } = city;
+
     return [
       title,
-      city,
+      name,
+      latitude,
+      longitude,
       description,
       publishedDate,
-      photo,
+      preview,
+      images,
       rating,
       guests,
       houseType,
       price,
       rooms,
-      featureType,
+      features,
       firstname,
       lastname,
       email,
       isPremium,
       isFavourite,
-      avatar,
-      comments,
-      latitude,
-      longitude
+      avatarPath,
+      userType,
+      commentCount
     ].join('\t');
   }
 }
