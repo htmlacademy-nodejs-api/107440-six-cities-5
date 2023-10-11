@@ -1,3 +1,5 @@
+import { City, User } from './index.js';
+
 export enum HouseType {
   Apartment = 'Apartment',
   House = 'House',
@@ -18,8 +20,8 @@ export enum FeatureType {
 export type RentOffer = {
   title: string;
   description: string;
-  publishDate: string;
-  cityId: string;
+  publishDate: Date;
+  city: City;
   preview: string;
   images: string;
   isPremium: boolean;
@@ -30,6 +32,6 @@ export type RentOffer = {
   guests: number;
   price: number;
   features: FeatureType[];
-  authorId: string;
+  author: User;
   commentCount: number;
 };

@@ -7,8 +7,8 @@ export class CreateRentOfferDto {
   public cityId: string;
   public preview: string;
   public images: string;
-  public isPremium: string;
-  public isFavourite: string;
+  public isPremium: boolean;
+  public isFavourite: boolean;
   public rating: number;
   public houseType: HouseType;
   public rooms: number;

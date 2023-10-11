@@ -19,13 +19,36 @@
       "This beautiful 2 room apartment is located at the foot of the famous village of Montmartre. A great place of history, this neighborhood is known for its charm, quality shops, and tourist and romantic places."
     ],
     "cities": [
-      "Oslo",
-      "Stockholm",
-      "Warsaw",
-      "Rome",
-      "Madrid",
-      "Zagreb",
-      "Paris"
+      {
+        "name": "Amsterdam",
+        "latitude": 52.370216,
+        "longitude": 4.895168
+      },
+      {
+        "name": "Brussels",
+        "latitude": 50.846557,
+        "longitude": 4.351697
+      },
+      {
+        "name": "Cologne",
+        "latitude": 50.938361,
+        "longitude": 6.959974
+      },
+      {
+        "name": "Dusseldorf",
+        "latitude": 51.225402,
+        "longitude": 6.776314
+      },
+      {
+        "name": "Hamburg",
+        "latitude": 53.550341,
+        "longitude": 10.000654
+      },
+      {
+        "name": "Paris",
+        "latitude": 48.85661,
+        "longitude": 2.351499
+      }
     ],
     "previewImages": [
       "modern-real-estate.jpg",
@@ -52,7 +75,7 @@
       "Bob Marley",
       "Amy Whinehouse",
       "Michael Jackson",
-      "Madonna"
+      "Gave Grohl"
     ],
     "emails": [
       "snow@pisem.local",
