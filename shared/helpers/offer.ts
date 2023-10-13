@@ -1,49 +1,61 @@
 import { FeatureType, HouseType, RentOffer, User } from '../types/index.js';
 
-export function createRentOffer(offerData: string): Partial<RentOffer> {
+export function createRentOffer(offerData: string): RentOffer {
   const [
     title,
-    city,
+    cityName,
+    latitude,
+    longitude,
     description,
     publishDate,
     preview,
+    images,
     rating,
     guests,
     houseType,
     price,
     rooms,
-    featureType,
+    features,
     firstname,
     lastname,
     email,
     isPremium,
     isFavourite,
-    avatar
+    avatarPath,
+    userType,
+    commentCount
   ] = offerData.replace('\n', '').split('\t');
 
   const author = {
     email,
     firstname,
     lastname,
-    avatar
+    avatarPath,
+    type: userType
   };
 
   return {
     title,
     description,
     preview,
-    city,
+    images,
+    city: {
+      name: cityName,
+      latitude: Number.parseInt(latitude, 10),
+      longitude: Number.parseInt(longitude, 10)
+    },
     author: author as unknown as User,
     rating: Number.parseInt(rating, 10),
     guests: Number.parseInt(guests, 10),
     rooms: Number.parseInt(rooms, 10),
     isPremium: Boolean(isPremium),
     isFavourite: Boolean(isFavourite),
-    publishDate,
+    publishDate: new Date(publishDate),
     houseType: HouseType[houseType as keyof typeof HouseType],
-    features: featureType
+    features: features
       .split(',')
       .map((feature) => feature.trim()) as FeatureType[],
-    price: Number.parseInt(price, 10)
+    price: Number.parseInt(price, 10),
+    commentCount: Number.parseInt(commentCount, 10)
   };
 }

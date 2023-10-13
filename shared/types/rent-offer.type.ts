@@ -1,4 +1,4 @@
-import { User } from './user.type.js';
+import { City, User } from './index.js';
 
 export enum HouseType {
   Apartment = 'Apartment',
@@ -20,8 +20,8 @@ export enum FeatureType {
 export type RentOffer = {
   title: string;
   description: string;
-  publishDate: string;
-  city: string;
+  publishDate: Date;
+  city: City;
   preview: string;
   images: string;
   isPremium: boolean;
@@ -33,7 +33,5 @@ export type RentOffer = {
   price: number;
   features: FeatureType[];
   author: User;
-  comments: number;
-  latitude: number;
-  longitude: number;
+  commentCount: number;
 };
