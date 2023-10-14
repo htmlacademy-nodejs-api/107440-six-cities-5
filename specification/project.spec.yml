@@ -1,0 +1,18 @@
+openapi: 3.1.0
+info:
+  title: API server for «Six cities» project.
+  description: |-
+    * The list of resources and routes for «Six cities».
+  license:
+    name: MIT
+    url: https://opensource.org/licenses/MIT
+  version: 2.0.0
+tags:
+  - name: rent-offers
+    description: Actions with rent offers.
+  - name: cities
+    description: Actions with cities.
+  - name: comments
+    description: Actions with rent comments.
+  - name: users
+    description: Actions with rent users.
