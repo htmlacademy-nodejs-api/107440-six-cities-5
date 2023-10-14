@@ -25,6 +25,25 @@ paths:
       summary: User sign up
       description: Sign up a new user.
 
+      requestBody:
+        description: The data to create a new user.
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/createUser'
+        required: true
+
+      responses:
+        "201":
+          description: User is signed up. User's object.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/user'
+
+        "409":
+          description: The user with such an email already exists.
+
   /users/login:
     post:
       tags:
@@ -44,3 +63,37 @@ paths:
         - users
       summary: Upload avatar image
       description: Uploads an image of user's avatar. The image should be in `png` or `jpg` format.
+
+components:
+  schemas:
+    createUser:
+      type: object
+
+      properties:
+        email:
+          type: string
+          example: john.lennon@gmail.com
+
+        firstName:
+          type: string
+          example: John
+
+        lastName:
+          type: string
+          example: Lennon
+
+        password:
+          type: string
+          example: 123456
+
+    user:
+      type: object
+
+      properties:
+        id:
+          type: string
+          example: 6329c3d6a04ab1061c6425ea
+
+        email:
+          type: string
+          example: john.lennon@gmail.com
