@@ -16,3 +16,31 @@ tags:
     description: Actions with rent comments.
   - name: users
     description: Actions with rent users.
+
+paths:
+  /users/register:
+    post:
+      tags:
+        - users
+      summary: User sign up
+      description: Sign up a new user.
+
+  /users/login:
+    post:
+      tags:
+        - users
+      summary: User sign in
+      description: User sign in based on login and password
+
+    get:
+      tags:
+        - users
+      summary: Check of user's status
+      description: Returns authorized user data
+
+  /users/{userId}/avatar:
+    post:
+      tags:
+        - users
+      summary: Upload avatar image
+      description: Uploads an image of user's avatar. The image should be in `png` or `jpg` format.
