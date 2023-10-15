@@ -1,11 +1,13 @@
 import { CityService } from './city.service.interface.js';
-import { inject } from 'inversify';
-import { Component } from '../../types/index.js';
+import { inject, injectable } from 'inversify';
+import { Component, SortType } from '../../types/index.js';
 import { Logger } from '../../libs/logger/index.js';
 import { DocumentType, types } from '@typegoose/typegoose';
 import { CityEntity } from './city.entity.js';
+import { MAX_CITIES_COUNT } from './city.constants.js';
 import { CreateCityDto } from './dto/create-city.dto.js';
 
+@injectable()
 export class DefaultCityService implements CityService {
   constructor(
     @inject(Component.Logger) private readonly logger: Logger,
@@ -45,6 +47,35 @@ export class DefaultCityService implements CityService {
   }
 
   public async find(): Promise<DocumentType<CityEntity>[]> {
-    return this.cityModel.find();
+    return this.cityModel
+      .aggregate([
+        {
+          $lookup: {
+            from: 'rentOffers',
+            let: { cityId: '$_id' },
+            pipeline: [
+              {
+                $match: {
+                  $expr: {
+                    $eq: ['$cityId', '$$cityId'] // Filter rent offers based on cityId
+                  }
+                }
+              },
+              { $project: { _id: 1 } }
+            ],
+            as: 'rentOffers'
+          }
+        },
+        {
+          $addFields: {
+            id: { $toString: '$_id' },
+            rentOfferCount: { $size: '$rentOffers' }
+          }
+        },
+        { $unset: 'rentOffers' },
+        { $limit: MAX_CITIES_COUNT },
+        { $sort: { rentOfferCount: SortType.Down } }
+      ])
+      .exec();
   }
 }
