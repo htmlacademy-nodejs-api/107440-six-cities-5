@@ -25,6 +25,10 @@ export class DefaultRentOfferService implements RentOfferService {
     return result;
   }
 
+  public async find(): Promise<DocumentType<RentOfferEntity>[]> {
+    return this.rentOfferModel.find().populate(['userId', 'cityId']).exec();
+  }
+
   public async findById(
     rentOfferId: string
   ): Promise<DocumentType<RentOfferEntity> | null> {
