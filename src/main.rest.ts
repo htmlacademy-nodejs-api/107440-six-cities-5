@@ -6,13 +6,15 @@ import { createRestApplicationContainer } from './rest/rest.container.js';
 import { createUserContainer } from '../shared/modules/user/index.js';
 import { createCityContainer } from '../shared/modules/city/index.js';
 import { createRentOfferContainer } from '../shared/modules/rent-offer/index.js';
+import { createCommentContainer } from '../shared/modules/comment/index.js';
 
 function bootstrap() {
   const appContainer = Container.merge(
     createRestApplicationContainer(),
     createUserContainer(),
     createCityContainer(),
-    createRentOfferContainer()
+    createRentOfferContainer(),
+    createCommentContainer()
   );
 
   const restApplication = appContainer.get<RestApplication>(
