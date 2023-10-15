@@ -39,7 +39,7 @@ export class RentOfferEntity extends defaultClasses.TimeStamps {
   public preview!: string;
 
   @prop()
-  public images!: string;
+  public images!: string[];
 
   @prop()
   public isPremium!: boolean;
