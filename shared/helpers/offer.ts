@@ -16,8 +16,8 @@ export function createRentOffer(offerData: string): RentOffer {
     price,
     rooms,
     features,
-    firstname,
-    lastname,
+    firstName,
+    lastName,
     email,
     isPremium,
     isFavourite,
@@ -28,8 +28,8 @@ export function createRentOffer(offerData: string): RentOffer {
 
   const author = {
     email,
-    firstname,
-    lastname,
+    firstName,
+    lastName,
     avatarPath,
     type: userType
   };

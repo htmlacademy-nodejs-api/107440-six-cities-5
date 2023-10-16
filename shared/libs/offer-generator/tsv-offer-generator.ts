@@ -69,7 +69,7 @@ export class TSVOfferGenerator implements OfferGenerator {
       .subtract(generateRandomValue(FIRST_WEEK_DAY, LAST_WEEK_DAY), 'day')
       .toISOString();
 
-    const [firstname, lastname] = author.split(' ');
+    const [firstName, lastName] = author.split(' ');
 
     const userType = getRandomItem<string>([UserType.Pro, UserType.Usual]);
 
@@ -90,8 +90,8 @@ export class TSVOfferGenerator implements OfferGenerator {
       price,
       rooms,
       features,
-      firstname,
-      lastname,
+      firstName,
+      lastName,
       email,
       isPremium,
       isFavourite,
