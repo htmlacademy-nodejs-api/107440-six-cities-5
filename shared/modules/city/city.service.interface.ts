@@ -10,4 +10,5 @@ export interface CityService {
     cityName: string,
     dto: CreateCityDto
   ): Promise<DocumentType<CityEntity>>;
+  find(): Promise<DocumentType<CityEntity>[]>;
 }
