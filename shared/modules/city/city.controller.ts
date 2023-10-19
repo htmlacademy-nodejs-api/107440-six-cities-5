@@ -4,6 +4,8 @@ import { BaseController, HttpMethod } from '../../libs/rest/index.js';
 import { Logger } from '../../libs/logger/index.js';
 import { Component } from '../../types/index.js';
 import { CityService } from './city.service.interface.js';
+import { fillDTO } from '../../helpers/index.js';
+import { CityRdo } from './rdo/city.rdo.js';
 
 @injectable()
 export class CityController extends BaseController {
@@ -22,7 +24,8 @@ export class CityController extends BaseController {
 
   public async index(_req: Request, res: Response): Promise<void> {
     const cities = await this.cityService.find();
-    this.ok(res, cities);
+    const responseData = fillDTO(CityRdo, cities);
+    this.ok(res, responseData);
   }
 
   public create(_req: Request, _res: Response): void {
