@@ -6,6 +6,8 @@ import { Component } from '../../types/index.js';
 import { CityService } from './city.service.interface.js';
 import { fillDTO } from '../../helpers/index.js';
 import { CityRdo } from './rdo/city.rdo.js';
+import { CreateCityDto } from './dto/create-city.dto.js';
+import { StatusCodes } from 'http-status-codes';
 
 @injectable()
 export class CityController extends BaseController {
@@ -28,7 +30,24 @@ export class CityController extends BaseController {
     this.ok(res, responseData);
   }
 
-  public create(_req: Request, _res: Response): void {
-    // Код обработчика
+  public async create(
+    {
+      body
+    }: Request<Record<string, unknown>, Record<string, unknown>, CreateCityDto>,
+    res: Response
+  ): Promise<void> {
+    const existCity = await this.cityService.findByCityName(body.name);
+
+    if (existCity) {
+      const existCityError = new Error(`City with name «${body.name}» exists.`);
+      this.send(res, StatusCodes.UNPROCESSABLE_ENTITY, {
+        error: existCityError.message
+      });
+
+      return this.logger.error(existCityError.message, existCityError);
+    }
+
+    const result = await this.cityService.create(body);
+    this.created(res, fillDTO(CityRdo, result));
   }
 }
