@@ -20,6 +20,8 @@ export class RestApplication {
     private readonly cityController: Controller,
     @inject(Component.UserController)
     private readonly userController: Controller,
+    @inject(Component.RentOfferController)
+    private readonly rentOfferController: Controller,
     @inject(Component.ExceptionFilter)
     private readonly appExceptionFilter: ExceptionFilter
   ) {
@@ -46,6 +48,7 @@ export class RestApplication {
   private async _initControllers() {
     this.server.use('/cities', this.cityController.router);
     this.server.use('/users', this.userController.router);
+    this.server.use('/rentOffers', this.rentOfferController.router);
   }
 
   private async _initMiddleware() {
