@@ -7,18 +7,35 @@ import { RentOfferEntity } from './rent-offer.entity.js';
 import { CreateRentOfferDto } from './dto/create-rent-offer.dto.js';
 import { UpdateRentOfferDto } from './dto/update-rent-offer.dto.js';
 import { DEFAULT_OFFER_COUNT } from './rent-offer.constants.js';
+import { CityEntity } from '../city/city.entity.js';
+import { HttpError } from '../../libs/rest/index.js';
+import { StatusCodes } from 'http-status-codes';
 
 @injectable()
 export class DefaultRentOfferService implements RentOfferService {
   constructor(
     @inject(Component.Logger) private readonly logger: Logger,
     @inject(Component.RentOfferModel)
-    private readonly rentOfferModel: types.ModelType<RentOfferEntity>
+    private readonly rentOfferModel: types.ModelType<RentOfferEntity>,
+    @inject(Component.CityModel)
+    private readonly cityModel: types.ModelType<CityEntity>
   ) {}
 
   public async create(
     dto: CreateRentOfferDto
   ): Promise<DocumentType<RentOfferEntity>> {
+    const foundCity = await this.cityModel.exists({
+      _id: dto.cityId
+    });
+
+    if (!foundCity) {
+      throw new HttpError(
+        StatusCodes.BAD_REQUEST,
+        'The city does not exist',
+        'DefaultRentOfferService'
+      );
+    }
+
     const result = await this.rentOfferModel.create(dto);
     this.logger.info(`New rent offer created: ${dto.title}`);
 

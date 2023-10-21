@@ -13,6 +13,7 @@ import { RentOfferRdo } from './rdo/rent-offer.rdo.js';
 
 import { RentOfferService } from './rent-offer.service.interface.js';
 import { ParamRentOfferId } from './types/param-rentOfferId.type.js';
+import { CreateRentOfferRequest } from './types/create-rent-offer-request.type.js';
 
 @injectable()
 export default class RentOfferController extends BaseController {
@@ -30,6 +31,7 @@ export default class RentOfferController extends BaseController {
       handler: this.show
     });
     this.addRoute({ path: '/', method: HttpMethod.Get, handler: this.index });
+    this.addRoute({ path: '/', method: HttpMethod.Post, handler: this.create });
   }
 
   public async index(_req: Request, resp: Response) {
@@ -53,5 +55,14 @@ export default class RentOfferController extends BaseController {
     }
 
     this.ok(res, fillDTO(RentOfferRdo, offer));
+  }
+
+  public async create(
+    { body }: CreateRentOfferRequest,
+    res: Response
+  ): Promise<void> {
+    const result = await this.rentOfferService.create(body);
+    const offer = await this.rentOfferService.findById(result.id);
+    this.created(res, fillDTO(RentOfferRdo, offer));
   }
 }
