@@ -1,0 +1,18 @@
+# Cities
+## Get list of cities
+GET http://localhost:4000/cities HTTP/1.1
+Content-Type: application/json
+
+###
+
+## Add new city
+POST http://localhost:4000/cities HTTP/1.1
+Content-Type: application/json
+
+{
+  "name": "London",
+  "latitude": 51.509865,
+  "longitude": -0.118092
+}
+
+###

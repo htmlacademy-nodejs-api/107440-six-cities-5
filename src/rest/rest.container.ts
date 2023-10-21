@@ -11,6 +11,10 @@ import {
   DatabaseClient,
   MongoDatabaseClient
 } from '../../shared/libs/database-client/index.js';
+import {
+  AppExceptionFilter,
+  ExceptionFilter
+} from '../../shared/libs/rest/index.js';
 
 export function createRestApplicationContainer() {
   const restApplicationContainer = new Container();
@@ -30,6 +34,10 @@ export function createRestApplicationContainer() {
   restApplicationContainer
     .bind<DatabaseClient>(Component.DatabaseClient)
     .to(MongoDatabaseClient)
+    .inSingletonScope();
+  restApplicationContainer
+    .bind<ExceptionFilter>(Component.ExceptionFilter)
+    .to(AppExceptionFilter)
     .inSingletonScope();
 
   return restApplicationContainer;
