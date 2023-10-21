@@ -8,6 +8,8 @@ import {
 import { inject, injectable } from 'inversify';
 import { Component } from '../../types/index.js';
 import { Logger } from '../../libs/logger/index.js';
+import { fillDTO } from '../../helpers/index.js';
+import { RentOfferRdo } from './rdo/rent-offer.rdo.js';
 
 import { RentOfferService } from './rent-offer.service.interface.js';
 import { ParamRentOfferId } from './types/param-rentOfferId.type.js';
@@ -27,6 +29,12 @@ export default class RentOfferController extends BaseController {
       method: HttpMethod.Get,
       handler: this.show
     });
+    this.addRoute({ path: '/', method: HttpMethod.Get, handler: this.index });
+  }
+
+  public async index(_req: Request, resp: Response) {
+    const rentOffers = await this.rentOfferService.find();
+    this.ok(resp, fillDTO(RentOfferRdo, rentOffers));
   }
 
   public async show(
@@ -44,6 +52,6 @@ export default class RentOfferController extends BaseController {
       );
     }
 
-    this.ok(res, offer);
+    this.ok(res, fillDTO(RentOfferRdo, offer));
   }
 }

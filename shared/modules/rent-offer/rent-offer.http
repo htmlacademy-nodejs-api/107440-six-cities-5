@@ -1,0 +1,9 @@
+## Get the rent offer by id
+GET http://localhost:4000/rentOffers/652c5693a131ff6e3e8e4f8f HTTP/1.1
+
+###
+
+## Get the list of rent offers
+GET http://localhost:4000/rentOffers HTTP/1.1
+
+###
