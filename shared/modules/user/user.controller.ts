@@ -4,16 +4,18 @@ import { StatusCodes } from 'http-status-codes';
 import {
   BaseController,
   HttpError,
-  HttpMethod
+  HttpMethod,
+  ValidateDtoMiddleware
 } from '../../libs/rest/index.js';
 import { UserService } from './user.service.interface.js';
 import { Config, RestSchema } from '../../libs/config/index.js';
 import { Logger } from '../../libs/logger/index.js';
 import { Component } from '../../types/index.js';
-import { CreateUserRequest } from './create-user-request.type.js';
+import { CreateUserRequest } from './types/create-user-request.type.js';
 import { fillDTO } from '../../helpers/index.js';
 import { UserRdo } from './rdo/user.rdo.js';
-import { LoginUserRequest } from './login-user-request.type.js';
+import { LoginUserRequest } from './types/login-user-request.type.js';
+import { CreateUserDto } from './index.js';
 
 @injectable()
 export class UserController extends BaseController {
@@ -28,7 +30,8 @@ export class UserController extends BaseController {
     this.addRoute({
       path: '/signup',
       method: HttpMethod.Post,
-      handler: this.create
+      handler: this.create,
+      middlewares: [new ValidateDtoMiddleware(CreateUserDto)]
     });
 
     this.addRoute({
