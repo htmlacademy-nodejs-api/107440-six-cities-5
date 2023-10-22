@@ -4,6 +4,7 @@ import {
   BaseController,
   HttpError,
   HttpMethod,
+  ValidateDtoMiddleware,
   ValidateObjectIdMiddleware
 } from '../../libs/rest/index.js';
 import { inject, injectable } from 'inversify';
@@ -20,6 +21,7 @@ import {
   DEFAULT_DISCUSSED_OFFER_COUNT,
   DEFAULT_NEW_OFFER_COUNT
 } from './rent-offer.constants.js';
+import { CreateRentOfferDto } from './index.js';
 
 @injectable()
 export default class RentOfferController extends BaseController {
@@ -40,7 +42,12 @@ export default class RentOfferController extends BaseController {
       middlewares: [new ValidateObjectIdMiddleware('rentOfferId')]
     });
     this.addRoute({ path: '/', method: HttpMethod.Get, handler: this.index });
-    this.addRoute({ path: '/', method: HttpMethod.Post, handler: this.create });
+    this.addRoute({
+      path: '/',
+      method: HttpMethod.Post,
+      handler: this.create,
+      middlewares: [new ValidateDtoMiddleware(CreateRentOfferDto)]
+    });
     this.addRoute({
       path: '/:rentOfferId',
       method: HttpMethod.Delete,
