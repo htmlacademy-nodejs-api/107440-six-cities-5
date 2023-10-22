@@ -662,7 +662,7 @@ components:
           type: boolean
           example: true
 
-        isFavourite:
+        isFavorite:
           type: boolean
           example: false
 
