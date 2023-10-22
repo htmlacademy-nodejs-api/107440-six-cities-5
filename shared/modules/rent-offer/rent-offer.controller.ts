@@ -32,6 +32,11 @@ export default class RentOfferController extends BaseController {
     });
     this.addRoute({ path: '/', method: HttpMethod.Get, handler: this.index });
     this.addRoute({ path: '/', method: HttpMethod.Post, handler: this.create });
+    this.addRoute({
+      path: '/:rentOfferID',
+      method: HttpMethod.Delete,
+      handler: this.delete
+    });
   }
 
   public async index(_req: Request, resp: Response) {
@@ -64,5 +69,20 @@ export default class RentOfferController extends BaseController {
     const result = await this.rentOfferService.create(body);
     const offer = await this.rentOfferService.findById(result.id);
     this.created(res, fillDTO(RentOfferRdo, offer));
+  }
+
+  public async delete({ params }: Request<ParamRentOfferId>, res: Response) {
+    const { rentOfferId } = params;
+    const rentOffer = await this.rentOfferService.deleteById(rentOfferId);
+
+    if (!rentOffer) {
+      throw new HttpError(
+        StatusCodes.NOT_FOUND,
+        `Rent offer with id ${rentOfferId} not found.`,
+        'OfferController'
+      );
+    }
+
+    this.noContent(res, rentOffer);
   }
 }
