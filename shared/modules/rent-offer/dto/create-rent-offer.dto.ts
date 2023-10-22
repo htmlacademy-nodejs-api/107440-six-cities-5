@@ -34,7 +34,7 @@ export class CreateRentOfferDto {
   @IsMongoId({ message: CreateRentOfferValidationMessage.cityId.invalidId })
   public cityId: string;
 
-  @IsString()
+  @IsString({ message: UpdateRentOfferMessage.image.invalidFormat })
   @MaxLength(256, { message: CreateRentOfferValidationMessage.image.maxLength })
   public preview: string;
 

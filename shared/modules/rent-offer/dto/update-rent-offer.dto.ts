@@ -37,7 +37,7 @@ export class UpdateRentOfferDto {
   public cityId?: string;
 
   @IsOptional()
-  @IsString()
+  @IsString({ message: UpdateRentOfferMessage.image.invalidFormat })
   @MaxLength(256, { message: UpdateRentOfferMessage.image.maxLength })
   public preview?: string;
 

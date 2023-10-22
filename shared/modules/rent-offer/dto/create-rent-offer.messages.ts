@@ -11,6 +11,7 @@ export const CreateRentOfferValidationMessage = {
     invalidFormat: 'postDate must be a valid ISO date'
   },
   image: {
+    invalidFormat: 'preview must be a string',
     maxLength: 'Too short for field «image»'
   },
   type: {
