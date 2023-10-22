@@ -1,5 +1,6 @@
 import { inject, injectable } from 'inversify';
 import { Request, Response } from 'express';
+import { StatusCodes } from 'http-status-codes';
 import {
   BaseController,
   HttpError,
@@ -11,14 +12,17 @@ import { CityService } from './city.service.interface.js';
 import { fillDTO } from '../../helpers/index.js';
 import { CityRdo } from './rdo/city.rdo.js';
 import { CreateCityDto } from './dto/create-city.dto.js';
-import { StatusCodes } from 'http-status-codes';
+import { GetRentOffersFromCity } from './types/get-rent-offers-from-city.type.js';
+import { RentOfferRdo, RentOfferService } from '../rent-offer/index.js';
 
 @injectable()
 export class CityController extends BaseController {
   constructor(
     @inject(Component.Logger) protected readonly logger: Logger,
     @inject(Component.CityService)
-    private readonly cityService: CityService
+    private readonly cityService: CityService,
+    @inject(Component.RentOfferService)
+    private readonly rentOfferService: RentOfferService
   ) {
     super(logger);
 
@@ -26,6 +30,11 @@ export class CityController extends BaseController {
 
     this.addRoute({ path: '/', method: HttpMethod.Get, handler: this.index });
     this.addRoute({ path: '/', method: HttpMethod.Post, handler: this.create });
+    this.addRoute({
+      path: '/:cityId/rentOffers',
+      method: HttpMethod.Get,
+      handler: this.getRentOffersFromCity
+    });
   }
 
   public async index(_req: Request, res: Response): Promise<void> {
@@ -52,5 +61,16 @@ export class CityController extends BaseController {
 
     const result = await this.cityService.create(body);
     this.created(res, fillDTO(CityRdo, result));
+  }
+
+  public async getRentOffersFromCity(
+    { params, query }: GetRentOffersFromCity,
+    res: Response
+  ): Promise<void> {
+    const offers = await this.rentOfferService.findByCityId(
+      params.cityId,
+      query.limit
+    );
+    this.ok(res, fillDTO(RentOfferRdo, offers));
   }
 }

@@ -103,6 +103,21 @@ paths:
                 schema:
                   $ref: '#/components/schemas/city'
 
+  /cities/{cityId}/rentOffers:
+    get:
+      tags:
+        - cities
+      summary: Get list of offers for specific city
+      description: Returns a list of city objects.
+
+      responses:
+        "200":
+            description: Array of city object.
+            content:
+              application/json:
+                schema:
+                  $ref: '#/components/schemas/city'
+
   /rentOffers/{numberOfRentOffers}:
     get:
       tags:
