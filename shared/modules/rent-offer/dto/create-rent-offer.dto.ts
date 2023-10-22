@@ -8,7 +8,8 @@ import {
   MaxLength,
   Min,
   MinLength,
-  IsBoolean
+  IsBoolean,
+  IsString
 } from 'class-validator';
 import { HouseType, FeatureType } from '../../../types/index.js';
 import { CreateRentOfferValidationMessage } from '../index.js';
@@ -33,6 +34,7 @@ export class CreateRentOfferDto {
   @IsMongoId({ message: CreateRentOfferValidationMessage.cityId.invalidId })
   public cityId: string;
 
+  @IsString()
   @MaxLength(256, { message: CreateRentOfferValidationMessage.image.maxLength })
   public preview: string;
 
@@ -43,7 +45,7 @@ export class CreateRentOfferDto {
     each: true,
     message: CreateRentOfferValidationMessage.image.maxLength
   })
-  public images: string;
+  public images: string[];
 
   @IsBoolean({
     message: CreateRentOfferValidationMessage.premium.invalidFormat
@@ -53,9 +55,9 @@ export class CreateRentOfferDto {
   @IsEnum(HouseType, { message: CreateRentOfferValidationMessage.type.invalid })
   public houseType: HouseType;
 
-  @IsInt({ message: CreateRentOfferValidationMessage.rooms.invalidFormat })
-  @Min(1, { message: CreateRentOfferValidationMessage.rooms.minValue })
-  @Max(5, { message: CreateRentOfferValidationMessage.rooms.maxValue })
+  @IsInt({ message: CreateRentOfferValidationMessage.rating.invalidFormat })
+  @Min(1, { message: CreateRentOfferValidationMessage.rating.minValue })
+  @Max(5, { message: CreateRentOfferValidationMessage.rating.maxValue })
   public rating: number;
 
   @IsInt({ message: CreateRentOfferValidationMessage.rooms.invalidFormat })

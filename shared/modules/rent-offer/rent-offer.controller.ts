@@ -21,7 +21,7 @@ import {
   DEFAULT_DISCUSSED_OFFER_COUNT,
   DEFAULT_NEW_OFFER_COUNT
 } from './rent-offer.constants.js';
-import { CreateRentOfferDto } from './index.js';
+import { CreateRentOfferDto, UpdateRentOfferDto } from './index.js';
 
 @injectable()
 export default class RentOfferController extends BaseController {
@@ -58,7 +58,10 @@ export default class RentOfferController extends BaseController {
       path: '/:rentOfferId',
       method: HttpMethod.Patch,
       handler: this.update,
-      middlewares: [new ValidateObjectIdMiddleware('rentOfferId')]
+      middlewares: [
+        new ValidateObjectIdMiddleware('rentOfferId'),
+        new ValidateDtoMiddleware(UpdateRentOfferDto)
+      ]
     });
     this.addRoute({
       path: '/:rentOfferId/comments',
