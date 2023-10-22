@@ -3,7 +3,8 @@ import { StatusCodes } from 'http-status-codes';
 import {
   BaseController,
   HttpError,
-  HttpMethod
+  HttpMethod,
+  ValidateObjectIdMiddleware
 } from '../../libs/rest/index.js';
 import { inject, injectable } from 'inversify';
 import { Component } from '../../types/index.js';
@@ -15,6 +16,10 @@ import { RentOfferService } from './rent-offer.service.interface.js';
 import { ParamRentOfferId } from './types/param-rentOfferId.type.js';
 import { CreateRentOfferRequest } from './types/create-rent-offer-request.type.js';
 import { UpdateRentOfferRequest } from './types/update-rent-offer-request.type.js';
+import {
+  DEFAULT_DISCUSSED_OFFER_COUNT,
+  DEFAULT_NEW_OFFER_COUNT
+} from './rent-offer.constants.js';
 
 @injectable()
 export default class RentOfferController extends BaseController {
@@ -31,24 +36,38 @@ export default class RentOfferController extends BaseController {
     this.addRoute({
       path: '/:rentOfferId',
       method: HttpMethod.Get,
-      handler: this.show
+      handler: this.show,
+      middlewares: [new ValidateObjectIdMiddleware('rentOfferId')]
     });
     this.addRoute({ path: '/', method: HttpMethod.Get, handler: this.index });
     this.addRoute({ path: '/', method: HttpMethod.Post, handler: this.create });
     this.addRoute({
       path: '/:rentOfferId',
       method: HttpMethod.Delete,
-      handler: this.delete
+      handler: this.delete,
+      middlewares: [new ValidateObjectIdMiddleware('rentOfferId')]
     });
     this.addRoute({
       path: '/:rentOfferId',
       method: HttpMethod.Patch,
-      handler: this.update
+      handler: this.update,
+      middlewares: [new ValidateObjectIdMiddleware('rentOfferId')]
     });
     this.addRoute({
       path: '/:rentOfferId/comments',
       method: HttpMethod.Get,
-      handler: this.getComments
+      handler: this.getComments,
+      middlewares: [new ValidateObjectIdMiddleware('rentOfferId')]
+    });
+    this.addRoute({
+      path: '/bundles/new',
+      method: HttpMethod.Get,
+      handler: this.getNew
+    });
+    this.addRoute({
+      path: '/bundles/discussed',
+      method: HttpMethod.Get,
+      handler: this.getDiscussed
     });
   }
 
@@ -134,5 +153,19 @@ export default class RentOfferController extends BaseController {
       params.rentOfferId
     );
     this.ok(res, fillDTO(CommentRdo, comments));
+  }
+
+  public async getNew(_req: Request, res: Response) {
+    const newOffers = await this.rentOfferService.findNew(
+      DEFAULT_NEW_OFFER_COUNT
+    );
+    this.ok(res, fillDTO(RentOfferRdo, newOffers));
+  }
+
+  public async getDiscussed(_req: Request, res: Response) {
+    const discussedOffers = await this.rentOfferService.findDiscussed(
+      DEFAULT_DISCUSSED_OFFER_COUNT
+    );
+    this.ok(res, fillDTO(RentOfferRdo, discussedOffers));
   }
 }

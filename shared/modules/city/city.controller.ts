@@ -4,7 +4,8 @@ import { StatusCodes } from 'http-status-codes';
 import {
   BaseController,
   HttpError,
-  HttpMethod
+  HttpMethod,
+  ValidateObjectIdMiddleware
 } from '../../libs/rest/index.js';
 import { Logger } from '../../libs/logger/index.js';
 import { Component } from '../../types/index.js';
@@ -33,7 +34,8 @@ export class CityController extends BaseController {
     this.addRoute({
       path: '/:cityId/rentOffers',
       method: HttpMethod.Get,
-      handler: this.getRentOffersFromCity
+      handler: this.getRentOffersFromCity,
+      middlewares: [new ValidateObjectIdMiddleware('cityId')]
     });
   }
 
