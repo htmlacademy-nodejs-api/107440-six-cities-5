@@ -52,6 +52,6 @@ Content-Type: application/json
 ###
 ## Get rent offers from a specific city
 
-GET http://localhost:4000/cities/65258514a30fc6ef77c0edfe/rentOffers?limit=10 HTTP/1.1
+GET http://localhost:4000/cities/652c4d7bdbb8c5afbade2be0/rentOffers?limit=10 HTTP/1.1
 
 ###

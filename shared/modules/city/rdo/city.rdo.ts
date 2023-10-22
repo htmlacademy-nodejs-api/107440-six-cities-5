@@ -11,5 +11,5 @@ export class CityRdo {
   public latitude: number;
 
   @Expose()
-  public longtitude: number;
+  public longitude: number;
 }
