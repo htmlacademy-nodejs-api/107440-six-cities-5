@@ -16,6 +16,7 @@ import { fillDTO } from '../../helpers/index.js';
 import { UserRdo } from './rdo/user.rdo.js';
 import { LoginUserRequest } from './types/login-user-request.type.js';
 import { CreateUserDto } from './index.js';
+import { LoginUserDto } from './dto/login-user.dto.js';
 
 @injectable()
 export class UserController extends BaseController {
@@ -37,7 +38,8 @@ export class UserController extends BaseController {
     this.addRoute({
       path: '/signin',
       method: HttpMethod.Post,
-      handler: this.login
+      handler: this.login,
+      middlewares: [new ValidateDtoMiddleware(LoginUserDto)]
     });
   }
 
