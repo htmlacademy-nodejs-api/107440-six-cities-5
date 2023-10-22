@@ -394,6 +394,10 @@ components:
           type: string
           example: 123456
 
+        type:
+          type: string
+          example: Usual
+
     userSignIn:
       type: object
 
@@ -466,9 +470,9 @@ components:
           type: string
           example: "2022-04-06T08:45:40.283Z"
 
-        city:
+        cityId:
           type: string
-          example: "Amsterdam"
+          example: "1234ndsvbh34"
 
         preview:
           type: string
@@ -481,10 +485,6 @@ components:
         isPremium:
           type: boolean
           example: true
-
-        isFavourite:
-          type: boolean
-          example: false
 
         rating:
           type: number
@@ -513,10 +513,6 @@ components:
         authorId:
           type: string
           example: 6329c3d6a04ab1061c6425ea
-
-        commentCount:
-          type: number
-          example: 11
 
     editRentOffer:
       type: object
@@ -538,9 +534,9 @@ components:
           type: string
           example: "2022-04-06T08:45:40.283Z"
 
-        city:
+        cityId:
           type: string
-          example: "Amsterdam"
+          example: "123234bsdhb"
 
         preview:
           type: string
@@ -553,10 +549,6 @@ components:
         isPremium:
           type: boolean
           example: true
-
-        isFavourite:
-          type: boolean
-          example: false
 
         rating:
           type: number
@@ -581,14 +573,6 @@ components:
         features:
           type: string
           example: '["Laptop", "Washer"]'
-
-        authorId:
-          type: string
-          example: 6329c3d6a04ab1061c6425ea
-
-        commentCount:
-          type: number
-          example: 11
 
     createComment:
       type: object
