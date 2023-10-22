@@ -34,6 +34,19 @@ Content-Type: application/json
 
 ## Delete rent offer by id
 
-DELETE http://localhost:4000/rentOffers/62825028a75295825778ac80 HTTP/1.1
+DELETE http://localhost:4000/rentOffers/111c5693a131ff6e3e8e4f96 HTTP/1.1
+
+###
+
+## Update rent offer by id
+
+PATCH http://localhost:4000/rentOffers/652c5693a131ff6e3e8e4f96 HTTP/1.1
+Content-Type: application/json
+
+{
+  "title": "Updated title",
+  "description": "Updated description",
+  "price": 999
+}
 
 ###

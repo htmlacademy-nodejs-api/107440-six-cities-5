@@ -65,6 +65,20 @@ export class DefaultRentOfferService implements RentOfferService {
     rentOfferId: string,
     dto: UpdateRentOfferDto
   ): Promise<DocumentType<RentOfferEntity> | null> {
+    if (dto.cityId) {
+      const foundCity = await this.cityModel.exists({
+        _id: dto.cityId
+      });
+
+      if (!foundCity) {
+        throw new HttpError(
+          StatusCodes.BAD_REQUEST,
+          'The city does not exist',
+          'DefaultRentOfferService'
+        );
+      }
+    }
+
     return this.rentOfferModel
       .findByIdAndUpdate(rentOfferId, dto, { new: true })
       .populate(['authorId', 'cityId'])
