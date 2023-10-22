@@ -299,6 +299,29 @@ paths:
                 schema:
                   $ref: '#/components/schemas/defaultPayloadData'
 
+  /rentOffers/{offerId}/comments:
+    post:
+      tags:
+        - rentOffers
+      summary: Get comments for a specifit rent offer
+      description: Returns a list of comments
+
+      parameters:
+        - in: query
+          name: offerId
+          required: true
+          schema:
+            type: integer
+          description: Unique idetifier of a rent offer
+
+      responses:
+        "200":
+            description: Array of comment objects.
+            content:
+              application/json:
+                schema:
+                  $ref: '#/components/schemas/comment'
+
   /rentOffers/premium/{cityId}:
      get:
       tags:

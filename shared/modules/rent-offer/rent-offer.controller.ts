@@ -10,7 +10,7 @@ import { Component } from '../../types/index.js';
 import { Logger } from '../../libs/logger/index.js';
 import { fillDTO } from '../../helpers/index.js';
 import { RentOfferRdo } from './rdo/rent-offer.rdo.js';
-
+import { CommentRdo, CommentService } from '../comment/index.js';
 import { RentOfferService } from './rent-offer.service.interface.js';
 import { ParamRentOfferId } from './types/param-rentOfferId.type.js';
 import { CreateRentOfferRequest } from './types/create-rent-offer-request.type.js';
@@ -19,9 +19,11 @@ import { UpdateRentOfferRequest } from './types/update-rent-offer-request.type.j
 @injectable()
 export default class RentOfferController extends BaseController {
   constructor(
-    @inject(Component.Logger) logger: Logger,
+    @inject(Component.Logger) protected logger: Logger,
     @inject(Component.RentOfferService)
-    private readonly rentOfferService: RentOfferService
+    private readonly rentOfferService: RentOfferService,
+    @inject(Component.CommentService)
+    private readonly commentService: CommentService
   ) {
     super(logger);
 
@@ -42,6 +44,11 @@ export default class RentOfferController extends BaseController {
       path: '/:rentOfferId',
       method: HttpMethod.Patch,
       handler: this.update
+    });
+    this.addRoute({
+      path: '/:rentOfferId/comments',
+      method: HttpMethod.Get,
+      handler: this.getComments
     });
   }
 
@@ -89,6 +96,8 @@ export default class RentOfferController extends BaseController {
       );
     }
 
+    await this.commentService.deleteByRentOfferId(rentOfferId);
+
     this.noContent(res, rentOffer);
   }
 
@@ -107,5 +116,23 @@ export default class RentOfferController extends BaseController {
     }
 
     this.ok(res, fillDTO(RentOfferRdo, updatedOffer));
+  }
+
+  public async getComments(
+    { params }: Request<ParamRentOfferId>,
+    res: Response
+  ): Promise<void> {
+    if (!(await this.rentOfferService.exists(params.rentOfferId))) {
+      throw new HttpError(
+        StatusCodes.NOT_FOUND,
+        `Rent Offer with id ${params.rentOfferId} not found.`,
+        'RentOfferController'
+      );
+    }
+
+    const comments = await this.commentService.findByRentOfferId(
+      params.rentOfferId
+    );
+    this.ok(res, fillDTO(CommentRdo, comments));
   }
 }

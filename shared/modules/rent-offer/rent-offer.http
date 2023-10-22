@@ -55,3 +55,8 @@ Content-Type: application/json
 GET http://localhost:4000/cities/652c4d7bdbb8c5afbade2be0/rentOffers?limit=10 HTTP/1.1
 
 ###
+
+## Get list of comments to a specifit rent offer
+GET http://localhost:4000/rentOffers/628a27d729c45f2bf9f6806a/comments HTTP/1.1
+
+###
