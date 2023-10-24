@@ -103,7 +103,30 @@ paths:
                 schema:
                   $ref: '#/components/schemas/city'
 
-  /rentOffers/{numberOfRentOffers}:
+  /cities/{cityId}/rentOffers:
+    get:
+      tags:
+        - cities
+      summary: Get list of offers for specific city
+      description: Returns a list of city objects.
+
+      parameters:
+        - in: query
+          name: cityId
+          required: true
+          schema:
+            type: integer
+          description: Unique idetifier of a city
+
+      responses:
+        "200":
+            description: Array of city object.
+            content:
+              application/json:
+                schema:
+                  $ref: '#/components/schemas/city'
+
+  /rentOffers?limit=10:
     get:
       tags:
         - rentOffers
@@ -112,7 +135,7 @@ paths:
 
       parameters:
         - in: query
-          name: numberOfRentOffers
+          name: limit
           required: false
           schema:
             type: integer
@@ -276,6 +299,29 @@ paths:
                 schema:
                   $ref: '#/components/schemas/defaultPayloadData'
 
+  /rentOffers/{offerId}/comments:
+    post:
+      tags:
+        - rentOffers
+      summary: Get comments for a specifit rent offer
+      description: Returns a list of comments
+
+      parameters:
+        - in: query
+          name: offerId
+          required: true
+          schema:
+            type: integer
+          description: Unique idetifier of a rent offer
+
+      responses:
+        "200":
+            description: Array of comment objects.
+            content:
+              application/json:
+                schema:
+                  $ref: '#/components/schemas/comment'
+
   /rentOffers/premium/{cityId}:
      get:
       tags:
@@ -299,20 +345,12 @@ paths:
                 schema:
                   $ref: '#/components/schemas/getRentOffer'
 
-  /comments/{offerId}:
-    get:
+  /comments:
+    post:
       tags:
         - comments
-      summary: Get a list of comments for a specific rent offer (50 or less items)
-      description: Returns a list of rent offer objects
-
-      parameters:
-        - in: query
-          name: offerId
-          required: true
-          schema:
-            type: integer
-          description: Unique idetifier of a rent offer
+      summary: Add a new comment to a specific rent offer
+      description: Returns a newly created comment object
 
       requestBody:
         description: The data to create a new comment.
@@ -321,28 +359,6 @@ paths:
             schema:
               $ref: '#/components/schemas/createComment'
         required: true
-
-      responses:
-        "200":
-            description: A list of comments objects.
-            content:
-              application/json:
-                schema:
-                  $ref: '#/components/schemas/comment'
-
-    post:
-      tags:
-        - comments
-      summary: Add a new comment to a specific rent offer
-      description: Returns a newly created comment object
-
-      parameters:
-        - in: query
-          name: offerId
-          required: true
-          schema:
-            type: integer
-          description: Unique idetifier of a rent offer
 
       responses:
         "200":
@@ -377,6 +393,10 @@ components:
         password:
           type: string
           example: 123456
+
+        type:
+          type: string
+          example: Usual
 
     userSignIn:
       type: object
@@ -450,9 +470,9 @@ components:
           type: string
           example: "2022-04-06T08:45:40.283Z"
 
-        city:
+        cityId:
           type: string
-          example: "Amsterdam"
+          example: "1234ndsvbh34"
 
         preview:
           type: string
@@ -465,10 +485,6 @@ components:
         isPremium:
           type: boolean
           example: true
-
-        isFavourite:
-          type: boolean
-          example: false
 
         rating:
           type: number
@@ -497,10 +513,6 @@ components:
         authorId:
           type: string
           example: 6329c3d6a04ab1061c6425ea
-
-        commentCount:
-          type: number
-          example: 11
 
     editRentOffer:
       type: object
@@ -522,9 +534,9 @@ components:
           type: string
           example: "2022-04-06T08:45:40.283Z"
 
-        city:
+        cityId:
           type: string
-          example: "Amsterdam"
+          example: "123234bsdhb"
 
         preview:
           type: string
@@ -537,10 +549,6 @@ components:
         isPremium:
           type: boolean
           example: true
-
-        isFavourite:
-          type: boolean
-          example: false
 
         rating:
           type: number
@@ -566,14 +574,6 @@ components:
           type: string
           example: '["Laptop", "Washer"]'
 
-        authorId:
-          type: string
-          example: 6329c3d6a04ab1061c6425ea
-
-        commentCount:
-          type: number
-          example: 11
-
     createComment:
       type: object
 
@@ -582,17 +582,13 @@ components:
           type: string
           example: My awesome comment
 
-        publishDate:
-          type: string
-          example: "2022-04-06T08:45:40.283Z"
-
-        rating:
-          type: number
-          example: 8
-
         userId:
           type: string
-          example: 6329c3d6a04ab1061c6425ea
+          example: "2322kd2kemd2"
+
+        rentOfferId:
+          type: string
+          example: "1231lx0sa2kemd2"
 
     user:
       type: object
@@ -605,6 +601,14 @@ components:
         email:
           type: string
           example: john.lennon@gmail.com
+
+        firstName:
+          type: string
+          example: John
+
+        lastName:
+          type: string
+          example: Lennon
 
     city:
       type: object
@@ -662,7 +666,7 @@ components:
           type: boolean
           example: true
 
-        isFavourite:
+        isFavorite:
           type: boolean
           example: false
 
@@ -714,13 +718,8 @@ components:
           type: string
           example: "2022-04-06T08:45:40.283Z"
 
-        rating:
-          type: number
-          example: 8
-
-        userId:
-          type: string
-          example: 6329c3d6a04ab1061c6425ea
+        user:
+           $ref: '#/components/schemas/user'
 
     defaultPayloadData:
         type: object

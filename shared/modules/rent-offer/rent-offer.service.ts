@@ -7,18 +7,35 @@ import { RentOfferEntity } from './rent-offer.entity.js';
 import { CreateRentOfferDto } from './dto/create-rent-offer.dto.js';
 import { UpdateRentOfferDto } from './dto/update-rent-offer.dto.js';
 import { DEFAULT_OFFER_COUNT } from './rent-offer.constants.js';
+import { CityEntity } from '../city/city.entity.js';
+import { HttpError } from '../../libs/rest/index.js';
+import { StatusCodes } from 'http-status-codes';
 
 @injectable()
 export class DefaultRentOfferService implements RentOfferService {
   constructor(
     @inject(Component.Logger) private readonly logger: Logger,
     @inject(Component.RentOfferModel)
-    private readonly rentOfferModel: types.ModelType<RentOfferEntity>
+    private readonly rentOfferModel: types.ModelType<RentOfferEntity>,
+    @inject(Component.CityModel)
+    private readonly cityModel: types.ModelType<CityEntity>
   ) {}
 
   public async create(
     dto: CreateRentOfferDto
   ): Promise<DocumentType<RentOfferEntity>> {
+    const foundCity = await this.cityModel.exists({
+      _id: dto.cityId
+    });
+
+    if (!foundCity) {
+      throw new HttpError(
+        StatusCodes.BAD_REQUEST,
+        'The city does not exist',
+        'DefaultRentOfferService'
+      );
+    }
+
     const result = await this.rentOfferModel.create(dto);
     this.logger.info(`New rent offer created: ${dto.title}`);
 
@@ -26,7 +43,7 @@ export class DefaultRentOfferService implements RentOfferService {
   }
 
   public async find(): Promise<DocumentType<RentOfferEntity>[]> {
-    return this.rentOfferModel.find().populate(['userId', 'cityId']).exec();
+    return this.rentOfferModel.find().populate(['authorId', 'cityId']).exec();
   }
 
   public async findById(
@@ -34,7 +51,7 @@ export class DefaultRentOfferService implements RentOfferService {
   ): Promise<DocumentType<RentOfferEntity> | null> {
     return this.rentOfferModel
       .findById(rentOfferId)
-      .populate(['userId', 'cityId'])
+      .populate(['authorId', 'cityId'])
       .exec();
   }
 
@@ -48,9 +65,23 @@ export class DefaultRentOfferService implements RentOfferService {
     rentOfferId: string,
     dto: UpdateRentOfferDto
   ): Promise<DocumentType<RentOfferEntity> | null> {
+    if (dto.cityId) {
+      const foundCity = await this.cityModel.exists({
+        _id: dto.cityId
+      });
+
+      if (!foundCity) {
+        throw new HttpError(
+          StatusCodes.BAD_REQUEST,
+          'The city does not exist',
+          'DefaultRentOfferService'
+        );
+      }
+    }
+
     return this.rentOfferModel
       .findByIdAndUpdate(rentOfferId, dto, { new: true })
-      .populate(['userId', 'cityId'])
+      .populate(['authorId', 'cityId'])
       .exec();
   }
 
@@ -61,7 +92,7 @@ export class DefaultRentOfferService implements RentOfferService {
     const limit = count ?? DEFAULT_OFFER_COUNT;
     return this.rentOfferModel
       .find({ cityId: cityId }, {}, { limit })
-      .populate(['userId', 'cityId'])
+      .populate(['authorId', 'cityId'])
       .exec();
   }
 
@@ -88,7 +119,7 @@ export class DefaultRentOfferService implements RentOfferService {
       .find()
       .sort({ createdAt: SortType.Down })
       .limit(count)
-      .populate(['userId', 'cityId'])
+      .populate(['authorId', 'cityId'])
       .exec();
   }
 
@@ -99,7 +130,7 @@ export class DefaultRentOfferService implements RentOfferService {
       .find()
       .sort({ commentCount: SortType.Down })
       .limit(count)
-      .populate(['userId', 'cityId'])
+      .populate(['authorId', 'cityId'])
       .exec();
   }
 }
