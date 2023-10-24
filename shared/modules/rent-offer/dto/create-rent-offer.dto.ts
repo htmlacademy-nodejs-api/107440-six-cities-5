@@ -12,7 +12,7 @@ import {
   IsString
 } from 'class-validator';
 import { HouseType, FeatureType } from '../../../types/index.js';
-import { CreateRentOfferValidationMessage } from '../index.js';
+import { CreateRentOfferValidationMessage } from './create-rent-offer.messages.js';
 
 export class CreateRentOfferDto {
   @MinLength(10, { message: CreateRentOfferValidationMessage.title.minLength })
@@ -34,7 +34,7 @@ export class CreateRentOfferDto {
   @IsMongoId({ message: CreateRentOfferValidationMessage.cityId.invalidId })
   public cityId: string;
 
-  @IsString({ message: UpdateRentOfferMessage.image.invalidFormat })
+  @IsString({ message: CreateRentOfferValidationMessage.image.invalidFormat })
   @MaxLength(256, { message: CreateRentOfferValidationMessage.image.maxLength })
   public preview: string;
 
