@@ -2,6 +2,7 @@ import { Request, Response } from 'express';
 import { StatusCodes } from 'http-status-codes';
 import {
   BaseController,
+  DocumentExistsMiddleware,
   HttpError,
   HttpMethod,
   ValidateDtoMiddleware,
@@ -52,7 +53,14 @@ export default class RentOfferController extends BaseController {
       path: '/:rentOfferId',
       method: HttpMethod.Delete,
       handler: this.delete,
-      middlewares: [new ValidateObjectIdMiddleware('rentOfferId')]
+      middlewares: [
+        new ValidateObjectIdMiddleware('rentOfferId'),
+        new DocumentExistsMiddleware(
+          this.rentOfferService,
+          'RentOffer',
+          'rentOfferId'
+        )
+      ]
     });
     this.addRoute({
       path: '/:rentOfferId',
@@ -60,14 +68,26 @@ export default class RentOfferController extends BaseController {
       handler: this.update,
       middlewares: [
         new ValidateObjectIdMiddleware('rentOfferId'),
-        new ValidateDtoMiddleware(UpdateRentOfferDto)
+        new ValidateDtoMiddleware(UpdateRentOfferDto),
+        new DocumentExistsMiddleware(
+          this.rentOfferService,
+          'RentOffer',
+          'rentOfferId'
+        )
       ]
     });
     this.addRoute({
       path: '/:rentOfferId/comments',
       method: HttpMethod.Get,
       handler: this.getComments,
-      middlewares: [new ValidateObjectIdMiddleware('rentOfferId')]
+      middlewares: [
+        new ValidateObjectIdMiddleware('rentOfferId'),
+        new DocumentExistsMiddleware(
+          this.rentOfferService,
+          'RentOffer',
+          'rentOfferId'
+        )
+      ]
     });
     this.addRoute({
       path: '/bundles/new',
@@ -93,14 +113,6 @@ export default class RentOfferController extends BaseController {
     const { rentOfferId } = params;
     const offer = await this.rentOfferService.findById(rentOfferId);
 
-    if (!offer) {
-      throw new HttpError(
-        StatusCodes.NOT_FOUND,
-        `Rent offer with id ${rentOfferId} not found.`,
-        'RentOfferController'
-      );
-    }
-
     this.ok(res, fillDTO(RentOfferRdo, offer));
   }
 
@@ -117,14 +129,6 @@ export default class RentOfferController extends BaseController {
     const { rentOfferId } = params;
     const rentOffer = await this.rentOfferService.deleteById(rentOfferId);
 
-    if (!rentOffer) {
-      throw new HttpError(
-        StatusCodes.NOT_FOUND,
-        `Rent offer with id ${rentOfferId} not found.`,
-        'RentOfferController'
-      );
-    }
-
     await this.commentService.deleteByRentOfferId(rentOfferId);
 
     this.noContent(res, rentOffer);
@@ -135,14 +139,6 @@ export default class RentOfferController extends BaseController {
       params.rentOfferId,
       body
     );
-
-    if (!updatedOffer) {
-      throw new HttpError(
-        StatusCodes.NOT_FOUND,
-        `Rent offer with id ${params.rentOfferId} not found.`,
-        'RentOfferController'
-      );
-    }
 
     this.ok(res, fillDTO(RentOfferRdo, updatedOffer));
   }

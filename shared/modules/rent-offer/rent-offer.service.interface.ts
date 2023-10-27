@@ -2,8 +2,9 @@ import { CreateRentOfferDto } from './dto/create-rent-offer.dto.js';
 import { DocumentType } from '@typegoose/typegoose';
 import { RentOfferEntity } from './rent-offer.entity.js';
 import { UpdateRentOfferDto } from './dto/update-rent-offer.dto.js';
+import { DocumentExists } from '../../types/index.js';
 
-export interface RentOfferService {
+export interface RentOfferService extends DocumentExists {
   create(dto: CreateRentOfferDto): Promise<DocumentType<RentOfferEntity>>;
   findById(offerId: string): Promise<DocumentType<RentOfferEntity> | null>;
   find(): Promise<DocumentType<RentOfferEntity>[]>;
