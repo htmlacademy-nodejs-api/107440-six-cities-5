@@ -7,6 +7,7 @@ import { createUserContainer } from '../shared/modules/user/index.js';
 import { createCityContainer } from '../shared/modules/city/index.js';
 import { createRentOfferContainer } from '../shared/modules/rent-offer/index.js';
 import { createCommentContainer } from '../shared/modules/comment/index.js';
+import { createAuthContainer } from '../shared/modules/auth/index.js';
 
 function bootstrap() {
   const appContainer = Container.merge(
@@ -14,7 +15,8 @@ function bootstrap() {
     createUserContainer(),
     createCityContainer(),
     createRentOfferContainer(),
-    createCommentContainer()
+    createCommentContainer(),
+    createAuthContainer()
   );
 
   const restApplication = appContainer.get<RestApplication>(
