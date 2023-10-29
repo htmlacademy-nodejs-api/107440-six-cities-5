@@ -52,7 +52,7 @@ paths:
       description: User sign in based on login and password
 
       requestBody:
-        description: The data to check if user is signed in.
+        description: The data to sign in a user.
         content:
           application/json:
             schema:
@@ -66,12 +66,16 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/signInPayloadData'
+        "404":
+          description: User is not found.
+        "401":
+          description: Incorrect user name or password.
 
     get:
       tags:
         - users
       summary: Check the user's status
-      description: Returns authorized user data
+      description: Returns user data
 
       responses:
         "201":
@@ -80,6 +84,8 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/user'
+        "401":
+          description: User is not found.
 
   /users/{userId}/avatar:
     post:
