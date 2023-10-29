@@ -84,6 +84,5 @@ export class CreateRentOfferDto {
   })
   public features: FeatureType[];
 
-  @IsMongoId({ message: CreateRentOfferValidationMessage.userId.invalidId })
   public authorId: string;
 }
