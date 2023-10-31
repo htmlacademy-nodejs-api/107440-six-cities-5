@@ -78,4 +78,8 @@ export class DefaultCityService implements CityService {
       ])
       .exec();
   }
+
+  public async exists(documentId: string): Promise<boolean> {
+    return (await this.cityModel.exists({ _id: documentId })) !== null;
+  }
 }

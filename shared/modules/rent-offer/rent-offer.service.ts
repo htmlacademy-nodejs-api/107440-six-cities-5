@@ -92,6 +92,7 @@ export class DefaultRentOfferService implements RentOfferService {
     const limit = count ?? DEFAULT_OFFER_COUNT;
     return this.rentOfferModel
       .find({ cityId: cityId }, {}, { limit })
+      .sort({ createdAt: SortType.Down })
       .populate(['authorId', 'cityId'])
       .exec();
   }

@@ -3,6 +3,7 @@ import { Request, Response } from 'express';
 import { StatusCodes } from 'http-status-codes';
 import {
   BaseController,
+  DocumentExistsMiddleware,
   HttpError,
   HttpMethod,
   PrivateRouteMiddleware,
@@ -15,8 +16,16 @@ import { CityService } from './city.service.interface.js';
 import { fillDTO } from '../../helpers/index.js';
 import { CityRdo } from './rdo/city.rdo.js';
 import { CreateCityDto } from './dto/create-city.dto.js';
-import { GetRentOffersFromCity } from './types/get-rent-offers-from-city.type.js';
-import { RentOfferRdo, RentOfferService } from '../rent-offer/index.js';
+import {
+  GetRentOffersFromCity,
+  GetPremiumRentOffersFromCity
+} from './types/index.js';
+import {
+  PremiumRentOfferRdo,
+  RentOfferRdo,
+  RentOfferService,
+  MAX_PREMIUM_OFFERS_COUNT
+} from '../rent-offer/index.js';
 
 @injectable()
 export class CityController extends BaseController {
@@ -45,7 +54,19 @@ export class CityController extends BaseController {
       path: '/:cityId/rentOffers',
       method: HttpMethod.Get,
       handler: this.getRentOffersFromCity,
-      middlewares: [new ValidateObjectIdMiddleware('cityId')]
+      middlewares: [
+        new ValidateObjectIdMiddleware('cityId'),
+        new DocumentExistsMiddleware(this.cityService, 'City', 'cityId')
+      ]
+    });
+    this.addRoute({
+      path: '/:cityId/rentOffers/premium',
+      method: HttpMethod.Get,
+      handler: this.getPremiumRentOffersFromCity,
+      middlewares: [
+        new ValidateObjectIdMiddleware('cityId'),
+        new DocumentExistsMiddleware(this.cityService, 'City', 'cityId')
+      ]
     });
   }
 
@@ -84,5 +105,16 @@ export class CityController extends BaseController {
       query.limit
     );
     this.ok(res, fillDTO(RentOfferRdo, offers));
+  }
+
+  public async getPremiumRentOffersFromCity(
+    { params }: GetPremiumRentOffersFromCity,
+    res: Response
+  ): Promise<void> {
+    const offers = await this.rentOfferService.findByCityId(
+      params.cityId,
+      MAX_PREMIUM_OFFERS_COUNT
+    );
+    this.ok(res, fillDTO(PremiumRentOfferRdo, offers));
   }
 }
