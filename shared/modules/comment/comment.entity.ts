@@ -34,6 +34,9 @@ export class CommentEntity extends defaultClasses.TimeStamps {
   })
   public text: string;
 
+  @prop({ min: 1, max: 5, default: 0 })
+  public rating: number;
+
   @prop({
     ref: RentOfferEntity,
     required: true

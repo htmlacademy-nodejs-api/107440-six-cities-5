@@ -156,14 +156,6 @@ export default class RentOfferController extends BaseController {
     { params }: Request<ParamRentOfferId>,
     res: Response
   ): Promise<void> {
-    if (!(await this.rentOfferService.exists(params.rentOfferId))) {
-      throw new HttpError(
-        StatusCodes.NOT_FOUND,
-        `Rent Offer with id ${params.rentOfferId} not found.`,
-        'RentOfferController'
-      );
-    }
-
     const comments = await this.commentService.findByRentOfferId(
       params.rentOfferId
     );
