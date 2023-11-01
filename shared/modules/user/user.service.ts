@@ -15,6 +15,10 @@ export class DefaultUserService implements UserService {
     private readonly userModel: types.ModelType<UserEntity>
   ) {}
 
+  public async exists(documentId: string): Promise<boolean> {
+    return (await this.userModel.exists({ _id: documentId })) !== null;
+  }
+
   public async create(
     dto: CreateUserDto,
     salt: string
@@ -26,6 +30,12 @@ export class DefaultUserService implements UserService {
     this.logger.info(`New user created: ${user.email}`);
 
     return result;
+  }
+
+  public async findById(
+    userId: string
+  ): Promise<DocumentType<UserEntity> | null> {
+    return this.userModel.findById(userId);
   }
 
   public async findByEmail(

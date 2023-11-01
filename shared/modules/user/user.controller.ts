@@ -3,6 +3,7 @@ import { Request, Response } from 'express';
 import { StatusCodes } from 'http-status-codes';
 import {
   BaseController,
+  DocumentExistsMiddleware,
   HttpError,
   HttpMethod,
   UploadFileMiddleware,
@@ -21,6 +22,12 @@ import { CreateUserDto } from './index.js';
 import { LoginUserDto } from './dto/login-user.dto.js';
 import { AuthService } from '../auth/index.js';
 import { LoggedUserRdo } from './rdo/logged.user.rdo.js';
+import { RentOfferService } from '../rent-offer/rent-offer.service.interface.js';
+import {
+  FavoriteService,
+  FavoriteRdo,
+  ParamFavoriteReq
+} from '../favorite/index.js';
 
 @injectable()
 export class UserController extends BaseController {
@@ -29,7 +36,11 @@ export class UserController extends BaseController {
     @inject(Component.UserService) private readonly userService: UserService,
     @inject(Component.Config)
     private readonly configService: Config<RestSchema>,
-    @inject(Component.AuthService) private readonly authService: AuthService
+    @inject(Component.AuthService) private readonly authService: AuthService,
+    @inject(Component.RentOfferService)
+    private readonly rentOfferService: RentOfferService,
+    @inject(Component.FavoriteService)
+    private readonly favoriteService: FavoriteService
   ) {
     super(logger);
     this.logger.info('Register routes for UserController…');
@@ -64,6 +75,48 @@ export class UserController extends BaseController {
           this.configService.get('UPLOAD_DIRECTORY'),
           'avatar'
         )
+      ]
+    });
+
+    this.addRoute({
+      path: '/:userId/rentOffers/favorite',
+      method: HttpMethod.Get,
+      handler: this.getFavorite,
+      middlewares: [
+        new ValidateObjectIdMiddleware('userId'),
+        new DocumentExistsMiddleware(this.userService, 'User', 'userId')
+      ]
+    });
+
+    this.addRoute({
+      path: '/:userId/rentOffers/:rentOfferId/favorite',
+      method: HttpMethod.Post,
+      handler: this.addFavorite,
+      middlewares: [
+        new ValidateObjectIdMiddleware('userId'),
+        new ValidateObjectIdMiddleware('rentOfferId'),
+        new DocumentExistsMiddleware(
+          this.rentOfferService,
+          'RentOffer',
+          'rentOfferId'
+        ),
+        new DocumentExistsMiddleware(this.userService, 'User', 'userId')
+      ]
+    });
+
+    this.addRoute({
+      path: '/:userId/rentOffers/:rentOfferId/favorite',
+      method: HttpMethod.Delete,
+      handler: this.removeFavorite,
+      middlewares: [
+        new ValidateObjectIdMiddleware('userId'),
+        new ValidateObjectIdMiddleware('rentOfferId'),
+        new DocumentExistsMiddleware(
+          this.rentOfferService,
+          'RentOffer',
+          'rentOfferId'
+        ),
+        new DocumentExistsMiddleware(this.userService, 'User', 'userId')
       ]
     });
   }
@@ -122,5 +175,64 @@ export class UserController extends BaseController {
     }
 
     this.ok(res, fillDTO(LoggedUserRdo, foundedUser));
+  }
+
+  public async getFavorite(
+    { params }: Request<ParamFavoriteReq>,
+    res: Response
+  ): Promise<void> {
+    const result = await this.favoriteService.find(params.userId);
+
+    this.ok(res, fillDTO(FavoriteRdo, result));
+  }
+
+  public async addFavorite(
+    { params }: Request<ParamFavoriteReq>,
+    res: Response
+  ): Promise<void> {
+    const dublicate = await this.favoriteService.findFavoriteById({
+      userId: params.userId,
+      rentOfferId: params.rentOfferId
+    });
+
+    if (dublicate) {
+      throw new HttpError(
+        StatusCodes.BAD_REQUEST,
+        `Rent Offer with id ${params.rentOfferId} is already added into favorite list.`,
+        'RentOfferController'
+      );
+    }
+
+    const result = await this.favoriteService.addToFavorite({
+      userId: params.userId,
+      rentOfferId: params.rentOfferId
+    });
+
+    this.ok(res, fillDTO(FavoriteRdo, result));
+  }
+
+  public async removeFavorite(
+    { params }: Request<ParamFavoriteReq>,
+    res: Response
+  ): Promise<void> {
+    const favoriteObj = await this.favoriteService.findFavoriteById({
+      userId: params.userId,
+      rentOfferId: params.rentOfferId
+    });
+
+    if (!favoriteObj) {
+      throw new HttpError(
+        StatusCodes.BAD_REQUEST,
+        `Rent Offer with id ${params.rentOfferId} does not exist in favorite list.`,
+        'RentOfferController'
+      );
+    }
+
+    const result = await this.favoriteService.removeFromFavorite({
+      userId: params.userId,
+      rentOfferId: params.rentOfferId
+    });
+
+    this.ok(res, fillDTO(FavoriteRdo, result));
   }
 }

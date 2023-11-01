@@ -6,11 +6,12 @@ POST http://localhost:4000/users/signup HTTP/1.1
 Content-Type: application/json
 
 {
-  "email": "test@test.co",
+  "email": "john.lennon@gmail.com",
   "avatarPath": "test-avatar.png",
-  "firstname": "Test",
-  "lastNName": "Test",
-  "password": "12345abc"
+  "firstName": "John",
+  "lastName": "Lennon",
+  "password": "imagine",
+  "type": "Pro"
 }
 
 ###
@@ -26,7 +27,6 @@ Content-Type: application/json
 }
 
 ###
-###
 
 ## Send avatar image
 
@@ -40,10 +40,22 @@ Content-Type: image/png
 < /Users/antonpaskanny/Desktop/screen.png
 ------WebKitFormBoundary7MA4YWxkTrZu0gW--
 
-##
+###
 
 ## Check user's token
 GET http://localhost:4000/users/signin HTTP/1.1
 Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJlbWFpbCI6InRvcmFuc0BvdmVybG9vay5uZXQiLCJpZCI6IjY0NzBiYzM4M2UzMGRiNjc5ZGZhYzJkMiIsImlhdCI6MTY4NTk3NTQ4MiwiZXhwIjoxNjg2MTQ4MjgyfQ.Gq2-B1egouAnMxmXlR2ElVT6wCa97PS6lxzVI8LnGvo
 
 ###
+## Get list of favorite offers for a specific user
+GET http://localhost:4000/users/65424a6faafcb159a50ef389/rentOffers/favorite HTTP/1.1
+
+###
+## Add rent offer to a favorite list
+POST http://localhost:4000/users/65424a6faafcb159a50ef389/rentOffers/652c5693a131ff6e3e8e4f96/favorite HTTP/1.1
+
+###
+## Remove rent offer from a favorite list
+DELETE http://localhost:4000/users/65424a6faafcb159a50ef389/rentOffers/652c5693a131ff6e3e8e4f96/favorite HTTP/1.1
+
+
