@@ -2,12 +2,10 @@
 GET http://localhost:4000/rentOffers/652c5693a131ff6e3e8e4f8f HTTP/1.1
 
 ###
-
 ## Get the list of rent offers
 GET http://localhost:4000/rentOffers HTTP/1.1
 
 ###
-
 ## Create new offer
 POST http://localhost:4000/rentOffers HTTP/1.1
 Content-Type: application/json
@@ -32,14 +30,12 @@ Content-Type: application/json
 
 ###
 
+###
 ## Delete rent offer by id
-
 DELETE http://localhost:4000/rentOffers/111c5693a131ff6e3e8e4f96 HTTP/1.1
 
 ###
-
 ## Update rent offer by id
-
 PATCH http://localhost:4000/rentOffers/652c5693a131ff6e3e8e4f96 HTTP/1.1
 Content-Type: application/json
 
@@ -51,10 +47,7 @@ Content-Type: application/json
 
 ###
 ## Get rent offers from a specific city
-
 GET http://localhost:4000/cities/652c4d7bdbb8c5afbade2be0/rentOffers?limit=10 HTTP/1.1
-
-###
 
 ###
 ## Get premium rent offers from a specific city
@@ -62,8 +55,8 @@ GET http://localhost:4000/cities/652c4d7bdbb8c5afbade2be0/rentOffers?limit=10 HT
 GET http://localhost:4000/cities/652c4d7bdbb8c5afbade2be0/rentOffers/premium HTTP/1.1
 
 ###
-
 ## Get list of comments to a specifit rent offer
 GET http://localhost:4000/rentOffers/628a27d729c45f2bf9f6806a/comments HTTP/1.1
+
 
 ###

@@ -13,7 +13,7 @@ import { inject, injectable } from 'inversify';
 import { Component } from '../../types/index.js';
 import { Logger } from '../../libs/logger/index.js';
 import { fillDTO } from '../../helpers/index.js';
-import { RentOfferRdo } from './rdo/rent-offer.rdo.js';
+import { RentOfferRdo, DetailedRentOfferRdo } from './index.js';
 import { CommentRdo, CommentService } from '../comment/index.js';
 import { RentOfferService } from './rent-offer.service.interface.js';
 import { ParamRentOfferId } from './types/param-rentOfferId.type.js';
@@ -119,7 +119,7 @@ export default class RentOfferController extends BaseController {
     const { rentOfferId } = params;
     const offer = await this.rentOfferService.findById(rentOfferId);
 
-    this.ok(res, fillDTO(RentOfferRdo, offer));
+    this.ok(res, fillDTO(DetailedRentOfferRdo, offer));
   }
 
   public async create(
