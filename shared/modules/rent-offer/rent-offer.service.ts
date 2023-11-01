@@ -97,6 +97,18 @@ export class DefaultRentOfferService implements RentOfferService {
       .exec();
   }
 
+  public async findPremiumByCityId(
+    cityId: string,
+    count?: number
+  ): Promise<DocumentType<RentOfferEntity>[]> {
+    const limit = count ?? DEFAULT_OFFER_COUNT;
+    return this.rentOfferModel
+      .find({ cityId: cityId, isPremium: true }, {}, { limit })
+      .sort({ createdAt: SortType.Down })
+      .populate(['cityId'])
+      .exec();
+  }
+
   public async exists(documentId: string): Promise<boolean> {
     return (await this.rentOfferModel.exists({ _id: documentId })) !== null;
   }

@@ -16,3 +16,11 @@ Content-Type: application/json
 }
 
 ###
+
+## Get premium rent offers for a specific city
+GET http://localhost:4000/cities/652c4d099cfb7741494f0d83/rentOffers/premium HTTP/1.1
+
+###
+
+## Get rent offers for a specific city
+GET http://localhost:4000/cities/652c4d099cfb7741494f0d83/rentOffers HTTP/1.1

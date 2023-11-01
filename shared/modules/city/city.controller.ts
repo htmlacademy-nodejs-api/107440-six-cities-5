@@ -21,7 +21,6 @@ import {
   GetPremiumRentOffersFromCity
 } from './types/index.js';
 import {
-  PremiumRentOfferRdo,
   RentOfferRdo,
   RentOfferService,
   MAX_PREMIUM_OFFERS_COUNT
@@ -111,10 +110,10 @@ export class CityController extends BaseController {
     { params }: GetPremiumRentOffersFromCity,
     res: Response
   ): Promise<void> {
-    const offers = await this.rentOfferService.findByCityId(
+    const offers = await this.rentOfferService.findPremiumByCityId(
       params.cityId,
       MAX_PREMIUM_OFFERS_COUNT
     );
-    this.ok(res, fillDTO(PremiumRentOfferRdo, offers));
+    this.ok(res, fillDTO(RentOfferRdo, offers));
   }
 }

@@ -17,10 +17,13 @@ export interface RentOfferService extends DocumentExists {
     cityId: string,
     count?: number
   ): Promise<DocumentType<RentOfferEntity>[]>;
+  findPremiumByCityId(
+    cityId: string,
+    count?: number
+  ): Promise<DocumentType<RentOfferEntity>[]>;
   incCommentCount(
     offerId: string
   ): Promise<DocumentType<RentOfferEntity> | null>;
   findNew(count: number): Promise<DocumentType<RentOfferEntity>[]>;
   findDiscussed(count: number): Promise<DocumentType<RentOfferEntity>[]>;
-  exists(documentId: string): Promise<boolean>;
 }
