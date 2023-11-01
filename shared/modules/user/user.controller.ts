@@ -6,6 +6,7 @@ import {
   DocumentExistsMiddleware,
   HttpError,
   HttpMethod,
+  PrivateRouteMiddleware,
   UploadFileMiddleware,
   ValidateDtoMiddleware,
   ValidateObjectIdMiddleware
@@ -83,6 +84,7 @@ export class UserController extends BaseController {
       method: HttpMethod.Get,
       handler: this.getFavorite,
       middlewares: [
+        new PrivateRouteMiddleware(),
         new ValidateObjectIdMiddleware('userId'),
         new DocumentExistsMiddleware(this.userService, 'User', 'userId')
       ]
@@ -93,6 +95,7 @@ export class UserController extends BaseController {
       method: HttpMethod.Post,
       handler: this.addFavorite,
       middlewares: [
+        new PrivateRouteMiddleware(),
         new ValidateObjectIdMiddleware('userId'),
         new ValidateObjectIdMiddleware('rentOfferId'),
         new DocumentExistsMiddleware(
@@ -109,6 +112,7 @@ export class UserController extends BaseController {
       method: HttpMethod.Delete,
       handler: this.removeFavorite,
       middlewares: [
+        new PrivateRouteMiddleware(),
         new ValidateObjectIdMiddleware('userId'),
         new ValidateObjectIdMiddleware('rentOfferId'),
         new DocumentExistsMiddleware(
