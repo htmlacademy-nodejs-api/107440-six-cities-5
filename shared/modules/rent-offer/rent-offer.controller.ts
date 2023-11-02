@@ -1,9 +1,7 @@
 import { Request, Response } from 'express';
-import { StatusCodes } from 'http-status-codes';
 import {
   BaseController,
   DocumentExistsMiddleware,
-  HttpError,
   HttpMethod,
   PrivateRouteMiddleware,
   ValidateDtoMiddleware,
@@ -24,6 +22,7 @@ import {
   DEFAULT_NEW_OFFER_COUNT
 } from './rent-offer.constants.js';
 import { CreateRentOfferDto, UpdateRentOfferDto } from './index.js';
+import { FavoriteService } from '../favorite/index.js';
 
 @injectable()
 export default class RentOfferController extends BaseController {
@@ -32,11 +31,18 @@ export default class RentOfferController extends BaseController {
     @inject(Component.RentOfferService)
     private readonly rentOfferService: RentOfferService,
     @inject(Component.CommentService)
-    private readonly commentService: CommentService
+    private readonly commentService: CommentService,
+    @inject(Component.FavoriteService)
+    private readonly favoriteService: FavoriteService
   ) {
     super(logger);
 
     this.logger.info('Register routes for RentOfferController');
+    this.addRoute({
+      path: '/favorite/all',
+      method: HttpMethod.Get,
+      handler: this.getFavorite
+    });
     this.addRoute({
       path: '/:rentOfferId',
       method: HttpMethod.Get,
@@ -160,6 +166,14 @@ export default class RentOfferController extends BaseController {
       params.rentOfferId
     );
     this.ok(res, fillDTO(CommentRdo, comments));
+  }
+
+  public async getFavorite(
+    _req: Request<ParamRentOfferId>,
+    res: Response
+  ): Promise<void> {
+    const offers = await this.favoriteService.findAll();
+    this.ok(res, fillDTO(RentOfferRdo, offers));
   }
 
   public async getNew(_req: Request, res: Response) {

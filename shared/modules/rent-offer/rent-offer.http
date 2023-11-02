@@ -1,5 +1,5 @@
 ## Get the rent offer by id
-GET http://localhost:4000/rentOffers/652c5693a131ff6e3e8e4f8f HTTP/1.1
+GET http://localhost:4000/rentOffers/652c5693a131ff6e3e8e4f9c HTTP/1.1
 
 ###
 ## Get the list of rent offers
@@ -58,5 +58,7 @@ GET http://localhost:4000/cities/652c4d7bdbb8c5afbade2be0/rentOffers/premium HTT
 ## Get list of comments to a specifit rent offer
 GET http://localhost:4000/rentOffers/628a27d729c45f2bf9f6806a/comments HTTP/1.1
 
-
 ###
+
+## Get all favorite rent offers
+GET http://localhost:4000/rentOffers/favorite/all HTTP/1.1

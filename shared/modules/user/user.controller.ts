@@ -185,7 +185,7 @@ export class UserController extends BaseController {
     { params }: Request<ParamFavoriteReq>,
     res: Response
   ): Promise<void> {
-    const result = await this.favoriteService.find(params.userId);
+    const result = await this.favoriteService.findByUserId(params.userId);
 
     this.ok(res, fillDTO(FavoriteRdo, result));
   }

@@ -2,7 +2,7 @@ import { Expose, Type } from 'class-transformer';
 import { CityRdo } from '../../city/index.js';
 
 export class RentOfferRdo {
-  @Expose()
+  @Expose({ name: '_id' })
   public id: string;
 
   @Expose()
