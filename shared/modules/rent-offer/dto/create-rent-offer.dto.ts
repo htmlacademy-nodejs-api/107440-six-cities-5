@@ -19,9 +19,11 @@ export class CreateRentOfferDto {
   @MaxLength(100, { message: CreateRentOfferValidationMessage.title.maxLength })
   public title: string;
 
-  @MinLength(20, { message: CreateRentOfferValidationMessage.title.minLength })
+  @MinLength(20, {
+    message: CreateRentOfferValidationMessage.description.minLength
+  })
   @MaxLength(1024, {
-    message: CreateRentOfferValidationMessage.title.maxLength
+    message: CreateRentOfferValidationMessage.description.maxLength
   })
   public description: string;
 
@@ -78,11 +80,11 @@ export class CreateRentOfferDto {
   @IsArray({
     message: CreateRentOfferValidationMessage.features.invalidFormat
   })
-  @IsEnum(HouseType, {
+  @IsEnum(FeatureType, {
     each: true,
     message: CreateRentOfferValidationMessage.features.invalid
   })
   public features: FeatureType[];
 
-  public authorId: string;
+  public userId: string;
 }

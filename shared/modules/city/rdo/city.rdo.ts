@@ -1,7 +1,7 @@
 import { Expose } from 'class-transformer';
 
 export class CityRdo {
-  @Expose({ name: '_id' })
+  @Expose()
   public id: string;
 
   @Expose()

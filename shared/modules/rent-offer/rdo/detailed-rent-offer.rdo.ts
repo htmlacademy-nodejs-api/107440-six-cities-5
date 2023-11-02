@@ -34,7 +34,7 @@ export class DetailedRentOfferRdo {
   public houseType: string;
 
   @Expose()
-  public isFavorite: string;
+  public isFavorite: boolean;
 
   @Expose()
   public isPremium: boolean;
@@ -49,7 +49,7 @@ export class DetailedRentOfferRdo {
   @Type(() => CityRdo)
   public city: CityRdo;
 
-  @Expose({ name: 'authorId' })
+  @Expose({ name: 'userId' })
   @Type(() => UserRdo)
   public user: UserRdo;
 }

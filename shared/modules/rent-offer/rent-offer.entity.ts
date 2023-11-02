@@ -44,8 +44,8 @@ export class RentOfferEntity extends defaultClasses.TimeStamps {
   @prop()
   public isPremium!: boolean;
 
-  @prop()
-  public isFavourite!: boolean;
+  @prop({ default: false })
+  public isFavorite!: boolean;
 
   @prop()
   public rating!: number;
@@ -75,7 +75,7 @@ export class RentOfferEntity extends defaultClasses.TimeStamps {
     ref: UserEntity,
     required: true
   })
-  public authorId!: Ref<UserEntity>;
+  public userId!: Ref<UserEntity>;
 
   @prop({ default: 0 })
   public commentCount!: number;

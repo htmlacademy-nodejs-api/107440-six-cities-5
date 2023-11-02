@@ -1,4 +1,5 @@
 import { Request, Response } from 'express';
+import { DocumentType } from '@typegoose/typegoose';
 import {
   BaseController,
   DocumentExistsMiddleware,
@@ -22,7 +23,7 @@ import {
   DEFAULT_NEW_OFFER_COUNT
 } from './rent-offer.constants.js';
 import { CreateRentOfferDto, UpdateRentOfferDto } from './index.js';
-import { FavoriteService } from '../favorite/index.js';
+import { FavoriteEntity, FavoriteService } from '../favorite/index.js';
 
 @injectable()
 export default class RentOfferController extends BaseController {
@@ -47,7 +48,14 @@ export default class RentOfferController extends BaseController {
       path: '/:rentOfferId',
       method: HttpMethod.Get,
       handler: this.show,
-      middlewares: [new ValidateObjectIdMiddleware('rentOfferId')]
+      middlewares: [
+        new ValidateObjectIdMiddleware('rentOfferId'),
+        new DocumentExistsMiddleware(
+          this.rentOfferService,
+          'RentOffer',
+          'rentOfferId'
+        )
+      ]
     });
     this.addRoute({ path: '/', method: HttpMethod.Get, handler: this.index });
     this.addRoute({
@@ -113,17 +121,45 @@ export default class RentOfferController extends BaseController {
     });
   }
 
-  public async index(_req: Request, resp: Response) {
+  public async index({ tokenPayload }: Request, resp: Response) {
+    const { id } = tokenPayload || {};
+
     const rentOffers = await this.rentOfferService.find();
+
+    let favoritesObj: DocumentType<FavoriteEntity> | null;
+
+    if (id) {
+      favoritesObj = await this.favoriteService.findByUserId(id);
+    }
+
+    rentOffers.forEach((offer) => {
+      offer.isFavorite =
+        favoritesObj?.favorites?.some((favOffer) => favOffer.id === offer.id) ||
+        false;
+    });
+
     this.ok(resp, fillDTO(RentOfferRdo, rentOffers));
   }
 
   public async show(
-    { params }: Request<ParamRentOfferId>,
+    { params, tokenPayload }: Request<ParamRentOfferId>,
     res: Response
   ): Promise<void> {
     const { rentOfferId } = params;
+    const { id } = tokenPayload || {};
+
     const offer = await this.rentOfferService.findById(rentOfferId);
+
+    let isFavorite = false;
+
+    if (id) {
+      isFavorite = await this.favoriteService.isFavorite({
+        userId: id,
+        rentOfferId
+      });
+    }
+
+    offer!.isFavorite = isFavorite;
 
     this.ok(res, fillDTO(DetailedRentOfferRdo, offer));
   }
@@ -134,7 +170,7 @@ export default class RentOfferController extends BaseController {
   ): Promise<void> {
     const result = await this.rentOfferService.create({
       ...body,
-      authorId: tokenPayload.id
+      userId: tokenPayload.id
     });
     const offer = await this.rentOfferService.findById(result.id);
     this.created(res, fillDTO(RentOfferRdo, offer));

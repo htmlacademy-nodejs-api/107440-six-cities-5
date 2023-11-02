@@ -2,7 +2,7 @@ import { Expose, Type } from 'class-transformer';
 import { CityRdo } from '../../city/index.js';
 
 export class RentOfferRdo {
-  @Expose({ name: '_id' })
+  @Expose()
   public id: string;
 
   @Expose()
@@ -25,6 +25,9 @@ export class RentOfferRdo {
 
   @Expose()
   public isPremium: boolean;
+
+  @Expose()
+  public isFavorite: boolean;
 
   @Expose()
   public commentCount: number;

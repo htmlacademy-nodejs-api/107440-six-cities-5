@@ -18,7 +18,7 @@ export const CreateRentOfferValidationMessage = {
     invalid: 'type must be Apartment, House, Room or Hotel'
   },
   features: {
-    invalidFormat: 'Field cities must be an array',
+    invalidFormat: 'Field features must be an array',
     invalid:
       'Feature must be Breakfast, Air conditioning, Laptop friendly workspace, Baby seat, Washer, Towels or Fridge'
   },

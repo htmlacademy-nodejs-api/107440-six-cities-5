@@ -15,4 +15,5 @@ export interface FavoriteService {
   removeFromFavorite(
     dto: CreateFavoriteDto
   ): Promise<DocumentType<FavoriteEntity> | null>;
+  isFavorite(dto: CreateFavoriteDto): Promise<boolean>;
 }

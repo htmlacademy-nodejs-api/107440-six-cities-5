@@ -43,7 +43,7 @@ export class DefaultRentOfferService implements RentOfferService {
   }
 
   public async find(): Promise<DocumentType<RentOfferEntity>[]> {
-    return this.rentOfferModel.find().populate(['authorId', 'cityId']).exec();
+    return this.rentOfferModel.find().populate(['userId', 'cityId']).exec();
   }
 
   public async findById(
@@ -51,7 +51,7 @@ export class DefaultRentOfferService implements RentOfferService {
   ): Promise<DocumentType<RentOfferEntity> | null> {
     return this.rentOfferModel
       .findById(rentOfferId)
-      .populate(['authorId', 'cityId'])
+      .populate(['userId', 'cityId'])
       .exec();
   }
 
@@ -81,7 +81,7 @@ export class DefaultRentOfferService implements RentOfferService {
 
     return this.rentOfferModel
       .findByIdAndUpdate(rentOfferId, dto, { new: true })
-      .populate(['authorId', 'cityId'])
+      .populate(['userId', 'cityId'])
       .exec();
   }
 
@@ -93,7 +93,7 @@ export class DefaultRentOfferService implements RentOfferService {
     return this.rentOfferModel
       .find({ cityId: cityId }, {}, { limit })
       .sort({ createdAt: SortType.Down })
-      .populate(['authorId', 'cityId'])
+      .populate(['userId', 'cityId'])
       .exec();
   }
 
@@ -132,7 +132,7 @@ export class DefaultRentOfferService implements RentOfferService {
       .find()
       .sort({ createdAt: SortType.Down })
       .limit(count)
-      .populate(['authorId', 'cityId'])
+      .populate(['userId', 'cityId'])
       .exec();
   }
 
@@ -143,7 +143,7 @@ export class DefaultRentOfferService implements RentOfferService {
       .find()
       .sort({ commentCount: SortType.Down })
       .limit(count)
-      .populate(['authorId', 'cityId'])
+      .populate(['userId', 'cityId'])
       .exec();
   }
 }

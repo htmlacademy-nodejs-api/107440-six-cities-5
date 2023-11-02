@@ -122,4 +122,13 @@ export class DefaultFavoriteService implements FavoriteService {
 
     return result;
   }
+
+  public async isFavorite(dto: CreateFavoriteDto): Promise<boolean> {
+    const favoriteObj = await this.findFavoriteById({
+      userId: dto.userId,
+      rentOfferId: dto.rentOfferId
+    });
+
+    return !!favoriteObj;
+  }
 }

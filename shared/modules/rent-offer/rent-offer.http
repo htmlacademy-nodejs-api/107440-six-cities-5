@@ -1,31 +1,35 @@
 ## Get the rent offer by id
-GET http://localhost:4000/rentOffers/652c5693a131ff6e3e8e4f9c HTTP/1.1
+GET http://localhost:4000/rentOffers/6543e5d6b2dfb897f0c005d7 HTTP/1.1
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJlbWFpbCI6Imt1cnQuY29iYWluQGdtYWlsLmNvbSIsImZpcnN0TmFtZSI6Ikt1cnQiLCJsYXN0TmFtZSI6IkNvYmFpbiIsImlkIjoiNjU0M2U3MzlhMWM0YzU1NGJmYjEwNjNiIiwiaWF0IjoxNjk4OTQ5MDA5LCJleHAiOjE2OTkxMjE4MDl9.n3YH8RvZO6PJ-jdc-3sKjSDvfaCDb4YduZUpD9yihZ4
+
 
 ###
 ## Get the list of rent offers
 GET http://localhost:4000/rentOffers HTTP/1.1
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJlbWFpbCI6Imt1cnQuY29iYWluQGdtYWlsLmNvbSIsImZpcnN0TmFtZSI6Ikt1cnQiLCJsYXN0TmFtZSI6IkNvYmFpbiIsImlkIjoiNjU0M2U3MzlhMWM0YzU1NGJmYjEwNjNiIiwiaWF0IjoxNjk4OTQ5MDA5LCJleHAiOjE2OTkxMjE4MDl9.n3YH8RvZO6PJ-jdc-3sKjSDvfaCDb4YduZUpD9yihZ4
 
 ###
 ## Create new offer
 POST http://localhost:4000/rentOffers HTTP/1.1
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJlbWFpbCI6Imt1cnQuY29iYWluQGdtYWlsLmNvbSIsImZpcnN0TmFtZSI6Ikt1cnQiLCJsYXN0TmFtZSI6IkNvYmFpbiIsImlkIjoiNjU0M2U3MzlhMWM0YzU1NGJmYjEwNjNiIiwiaWF0IjoxNjk4OTQ5MDA5LCJleHAiOjE2OTkxMjE4MDl9.n3YH8RvZO6PJ-jdc-3sKjSDvfaCDb4YduZUpD9yihZ4
 Content-Type: application/json
 
 {
-  "title": "Test title",
-  "description": "Test description",
-  "publishDate": "2022-05-12T11:56:37.573Z",
-  "preview": "test-preview.png",
-  "features": ["image1.jpg", "image2.jpg"],
+  "title": "Kurt Chris Dave",
+  "description": "Nirvana Nirvana description",
+  "publishDate": "2022-08-12T11:56:37.573Z",
+  "preview": "band-preview.png",
+  "images": ["image1.jpg", "image2.jpg"],
   "isPremium": false,
-  "isFavourite": false,
-  "rating": 7,
-  "rooms": 5,
-  "guests": 8,
+  "isFavorite": false,
+  "rating": 5,
+  "rooms": 1,
+  "guests": 1,
   "houseType": "House",
-  "price": 1408,
-  "features": ["Laptop", "Washer"],
-  "authorId": "652c5693a131ff6e3e8e4f99",
-  "cityId": "652c5693a131ff6e3e8e4777"
+  "price": 150,
+  "features": ["Washer", "Air conditioning", "Breakfast"],
+  "userId": "6543e739a1c4c554bfb1063b",
+  "cityId": "652c4d7bdbb8c5afbade2be0"
 }
 
 ###
