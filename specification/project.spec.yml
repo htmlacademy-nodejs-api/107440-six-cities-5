@@ -94,20 +94,12 @@ paths:
       summary: Upload avatar image
       description: Uploads an image of user's avatar. The image should be in `png` or `jpg` format.
 
-  /users/{userId}/rentOffers/favorite:
+  /users/rentOffers/favorite:
     get:
       tags:
         - users
       summary: Get a list of favorite rent offers
       description: Returns a list of favorite rent offers for a specific user
-
-      parameters:
-        - in: query
-          name: userId
-          required: true
-          schema:
-            type: integer
-          description: Unique idetifier of a user
 
       responses:
         "200":
@@ -117,7 +109,7 @@ paths:
                 schema:
                   $ref: '#/components/schemas/shortRentOffer'
 
-  /users/{userId}/rentOffers/{rentOfferId}/favorite:
+  /users/rentOffers/{rentOfferId}/favorite:
     post:
       tags:
         - users
@@ -125,12 +117,6 @@ paths:
       description: Returns a list of favorite rent offers for a specific user
 
       parameters:
-        - in: query
-          name: userId
-          required: true
-          schema:
-            type: integer
-          description: Unique idetifier of a user
         - in: query
           name: rentOfferId
           required: true
@@ -152,12 +138,6 @@ paths:
       description: Returns a list of favorite rent offers for a specific user
 
       parameters:
-        - in: query
-          name: userId
-          required: true
-          schema:
-            type: integer
-          description: Unique idetifier of a user
         - in: query
           name: rentOfferId
           required: true
