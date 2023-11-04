@@ -44,7 +44,8 @@ export class ImportCommand implements Command {
     this.logger = new ConsoleLogger();
     this.rentOfferService = new DefaultRentOfferService(
       this.logger,
-      RentOfferModel
+      RentOfferModel,
+      CityModel
     );
     this.cityService = new DefaultCityService(this.logger, CityModel);
     this.userService = new DefaultUserService(this.logger, UserModel);
@@ -72,7 +73,7 @@ export class ImportCommand implements Command {
 
     const user = await this.userService.findOrCreate(
       {
-        ...offer.author,
+        ...offer.user,
         password: DEFAULT_USER_PASSWORD
       },
       this.salt
@@ -90,7 +91,7 @@ export class ImportCommand implements Command {
 
     await this.rentOfferService.create({
       features,
-      authorId: user.id,
+      userId: user.id,
       cityId: existCity.id,
       title: offer.title,
       description: offer.description,
@@ -98,13 +99,13 @@ export class ImportCommand implements Command {
       images: offer.images,
       publishDate: offer.publishDate,
       isPremium: offer.isPremium,
-      isFavourite: offer.isPremium,
       price: offer.price,
       rating: offer.rating,
       rooms: offer.rooms,
       guests: offer.guests,
-      commentCount: offer.commentCount,
-      houseType: offer.houseType
+      houseType: offer.houseType,
+      latitude: offer.latitude,
+      longitude: offer.longitude
     });
   }
 

@@ -1,10 +1,13 @@
 import { inject, injectable } from 'inversify';
 import { Request, Response } from 'express';
+import { DocumentType } from '@typegoose/typegoose';
 import { StatusCodes } from 'http-status-codes';
 import {
   BaseController,
+  DocumentExistsMiddleware,
   HttpError,
   HttpMethod,
+  PrivateRouteMiddleware,
   ValidateDtoMiddleware,
   ValidateObjectIdMiddleware
 } from '../../libs/rest/index.js';
@@ -14,8 +17,16 @@ import { CityService } from './city.service.interface.js';
 import { fillDTO } from '../../helpers/index.js';
 import { CityRdo } from './rdo/city.rdo.js';
 import { CreateCityDto } from './dto/create-city.dto.js';
-import { GetRentOffersFromCity } from './types/get-rent-offers-from-city.type.js';
-import { RentOfferRdo, RentOfferService } from '../rent-offer/index.js';
+import {
+  GetRentOffersFromCity,
+  GetPremiumRentOffersFromCity
+} from './types/index.js';
+import {
+  RentOfferRdo,
+  RentOfferService,
+  MAX_PREMIUM_OFFERS_COUNT
+} from '../rent-offer/index.js';
+import { FavoriteEntity, FavoriteService } from '../favorite/index.js';
 
 @injectable()
 export class CityController extends BaseController {
@@ -24,7 +35,9 @@ export class CityController extends BaseController {
     @inject(Component.CityService)
     private readonly cityService: CityService,
     @inject(Component.RentOfferService)
-    private readonly rentOfferService: RentOfferService
+    private readonly rentOfferService: RentOfferService,
+    @inject(Component.FavoriteService)
+    private readonly favoriteService: FavoriteService
   ) {
     super(logger);
 
@@ -35,13 +48,28 @@ export class CityController extends BaseController {
       path: '/',
       method: HttpMethod.Post,
       handler: this.create,
-      middlewares: [new ValidateDtoMiddleware(CreateCityDto)]
+      middlewares: [
+        new PrivateRouteMiddleware(),
+        new ValidateDtoMiddleware(CreateCityDto)
+      ]
     });
     this.addRoute({
       path: '/:cityId/rentOffers',
       method: HttpMethod.Get,
       handler: this.getRentOffersFromCity,
-      middlewares: [new ValidateObjectIdMiddleware('cityId')]
+      middlewares: [
+        new ValidateObjectIdMiddleware('cityId'),
+        new DocumentExistsMiddleware(this.cityService, 'City', 'cityId')
+      ]
+    });
+    this.addRoute({
+      path: '/:cityId/rentOffers/premium',
+      method: HttpMethod.Get,
+      handler: this.getPremiumRentOffersFromCity,
+      middlewares: [
+        new ValidateObjectIdMiddleware('cityId'),
+        new DocumentExistsMiddleware(this.cityService, 'City', 'cityId')
+      ]
     });
   }
 
@@ -72,13 +100,54 @@ export class CityController extends BaseController {
   }
 
   public async getRentOffersFromCity(
-    { params, query }: GetRentOffersFromCity,
+    { params, query, tokenPayload }: GetRentOffersFromCity,
     res: Response
   ): Promise<void> {
+    const { id } = tokenPayload || {};
+
     const offers = await this.rentOfferService.findByCityId(
       params.cityId,
       query.limit
     );
+
+    let favoritesObj: DocumentType<FavoriteEntity> | null;
+
+    if (id) {
+      favoritesObj = await this.favoriteService.findByUserId(id);
+    }
+
+    offers.forEach((offer) => {
+      offer.isFavorite =
+        favoritesObj?.favorites?.some((favOffer) => favOffer.id === offer.id) ||
+        false;
+    });
+
     this.ok(res, fillDTO(RentOfferRdo, offers));
+  }
+
+  public async getPremiumRentOffersFromCity(
+    { params, tokenPayload }: GetPremiumRentOffersFromCity,
+    res: Response
+  ): Promise<void> {
+    const { id } = tokenPayload || {};
+
+    const rentOffers = await this.rentOfferService.findPremiumByCityId(
+      params.cityId,
+      MAX_PREMIUM_OFFERS_COUNT
+    );
+
+    let favoritesObj: DocumentType<FavoriteEntity> | null;
+
+    if (id) {
+      favoritesObj = await this.favoriteService.findByUserId(id);
+    }
+
+    rentOffers.forEach((offer) => {
+      offer.isFavorite =
+        favoritesObj?.favorites?.some((favOffer) => favOffer.id === offer.id) ||
+        false;
+    });
+
+    this.ok(res, fillDTO(RentOfferRdo, rentOffers));
   }
 }

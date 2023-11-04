@@ -7,7 +7,7 @@ import { DocumentExists } from '../../types/index.js';
 export interface RentOfferService extends DocumentExists {
   create(dto: CreateRentOfferDto): Promise<DocumentType<RentOfferEntity>>;
   findById(offerId: string): Promise<DocumentType<RentOfferEntity> | null>;
-  find(): Promise<DocumentType<RentOfferEntity>[]>;
+  find(count?: number): Promise<DocumentType<RentOfferEntity>[]>;
   deleteById(offerId: string): Promise<DocumentType<RentOfferEntity> | null>;
   updateById(
     offerId: string,
@@ -17,10 +17,13 @@ export interface RentOfferService extends DocumentExists {
     cityId: string,
     count?: number
   ): Promise<DocumentType<RentOfferEntity>[]>;
+  findPremiumByCityId(
+    cityId: string,
+    count?: number
+  ): Promise<DocumentType<RentOfferEntity>[]>;
   incCommentCount(
     offerId: string
   ): Promise<DocumentType<RentOfferEntity> | null>;
   findNew(count: number): Promise<DocumentType<RentOfferEntity>[]>;
   findDiscussed(count: number): Promise<DocumentType<RentOfferEntity>[]>;
-  exists(documentId: string): Promise<boolean>;
 }

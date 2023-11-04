@@ -60,15 +60,22 @@
       "preview-5.jpg"
     ],
     "galleryImages": [
-      "room.jpg.jpg",
+      "room.jpg",
       "bathroom.jpg",
       "city-view.jpg",
       "two-bedrooms-toom.jpg",
       "balcony.jpg",
       "barn.jpg",
-      "hot-tube.jpg"
+      "hot-tube.jpg",
+      "room-second.jpg",
+      "table.jpg",
+      "yard.jpg",
+      "fridge.jpg",
+      "chair.jpg",
+      "picture.jpg",
+      "wall.jpg"
     ],
-    "authors": [
+    "users": [
       "John Lennon",
       "Kurt Cobain",
       "Egor Letov",

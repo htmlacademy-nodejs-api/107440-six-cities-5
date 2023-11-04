@@ -18,7 +18,7 @@ export const CreateRentOfferValidationMessage = {
     invalid: 'type must be Apartment, House, Room or Hotel'
   },
   features: {
-    invalidFormat: 'Field cities must be an array',
+    invalidFormat: 'Field features must be an array',
     invalid:
       'Feature must be Breakfast, Air conditioning, Laptop friendly workspace, Baby seat, Washer, Towels or Fridge'
   },
@@ -46,12 +46,20 @@ export const CreateRentOfferValidationMessage = {
     maxValue: 'Maximum rating is 5'
   },
   images: {
-    invalidFormat: 'Field images must be an array'
+    invalidFormat: 'Field images must be an array',
+    minSize: 'At least 6 items in the array are required',
+    maxSize: 'At most 6 items in the array are allowed'
   },
   cityId: {
     invalidId: 'cityId field must be a valid id'
   },
   userId: {
     invalidId: 'userId field must be a valid id'
+  },
+  latitude: {
+    invalidFormat: 'latitude field has a wrong format'
+  },
+  longitude: {
+    invalidFormat: 'longitude field has a wrong format'
   }
 } as const;

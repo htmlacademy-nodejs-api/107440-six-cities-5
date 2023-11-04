@@ -6,11 +6,12 @@ POST http://localhost:4000/users/signup HTTP/1.1
 Content-Type: application/json
 
 {
-  "email": "test@test.co",
-  "avatarPath": "test-avatar.png",
-  "firstname": "Test",
-  "lastNName": "Test",
-  "password": "12345abc"
+  "email": "trump.donald@gmail.com",
+  "avatarPath": "trump.png",
+  "firstName": "Donald",
+  "lastName": "Trump",
+  "password": "trumptower",
+  "type": "Pro"
 }
 
 ###
@@ -26,7 +27,6 @@ Content-Type: application/json
 }
 
 ###
-###
 
 ## Send avatar image
 
@@ -40,4 +40,24 @@ Content-Type: image/png
 < /Users/antonpaskanny/Desktop/screen.png
 ------WebKitFormBoundary7MA4YWxkTrZu0gW--
 
-##
+###
+## Check user's token
+GET http://localhost:4000/users/signin HTTP/1.1
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJlbWFpbCI6Imt1cnQuY29iYWluQGdtYWlsLmNvbSIsImZpcnN0TmFtZSI6Ikt1cnQiLCJsYXN0TmFtZSI6IkNvYmFpbiIsImlkIjoiNjU0M2U3MzlhMWM0YzU1NGJmYjEwNjNiIiwiaWF0IjoxNjk4OTQ5MDA5LCJleHAiOjE2OTkxMjE4MDl9.n3YH8RvZO6PJ-jdc-3sKjSDvfaCDb4YduZUpD9yihZ4
+
+###
+## Get list of favorite offers for a specific user
+GET http://localhost:4000/users/rentOffers/favorite HTTP/1.1
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJlbWFpbCI6ImpvaG4ubGVubm9uQGdtYWlsLmNvbSIsImZpcnN0TmFtZSI6IkpvaG4iLCJsYXN0TmFtZSI6Ikxlbm5vbiIsImlkIjoiNjU0MjRhNmZhYWZjYjE1OWE1MGVmMzg5IiwiaWF0IjoxNjk5MTI0MTgwLCJleHAiOjE2OTkyOTY5ODB9.hdhIM9FcpN_emsXej_4gLl2_fJ7LNg3PtMZ6QStfhEA
+
+###
+## Add rent offer to a favorite list
+POST http://localhost:4000/users/rentOffers/65464c1b76a5aa758fc54245/favorite HTTP/1.1
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJlbWFpbCI6ImpvaG4ubGVubm9uQGdtYWlsLmNvbSIsImZpcnN0TmFtZSI6IkpvaG4iLCJsYXN0TmFtZSI6Ikxlbm5vbiIsImlkIjoiNjU0MjRhNmZhYWZjYjE1OWE1MGVmMzg5IiwiaWF0IjoxNjk5MTI0MTgwLCJleHAiOjE2OTkyOTY5ODB9.hdhIM9FcpN_emsXej_4gLl2_fJ7LNg3PtMZ6QStfhEA
+
+###
+## Remove rent offer from a favorite list
+DELETE http://localhost:4000/users/rentOffers/65464c1b76a5aa758fc54245/favorite HTTP/1.1
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJlbWFpbCI6ImpvaG4ubGVubm9uQGdtYWlsLmNvbSIsImZpcnN0TmFtZSI6IkpvaG4iLCJsYXN0TmFtZSI6Ikxlbm5vbiIsImlkIjoiNjU0MjRhNmZhYWZjYjE1OWE1MGVmMzg5IiwiaWF0IjoxNjk5MTI0MTgwLCJleHAiOjE2OTkyOTY5ODB9.hdhIM9FcpN_emsXej_4gLl2_fJ7LNg3PtMZ6QStfhEA
+
+

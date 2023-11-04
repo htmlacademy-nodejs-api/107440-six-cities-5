@@ -22,9 +22,9 @@ export class UpdateRentOfferDto {
   public title?: string;
 
   @IsOptional()
-  @MinLength(20, { message: UpdateRentOfferMessage.title.minLength })
+  @MinLength(20, { message: UpdateRentOfferMessage.description.minLength })
   @MaxLength(1024, {
-    message: UpdateRentOfferMessage.title.maxLength
+    message: UpdateRentOfferMessage.description.maxLength
   })
   public description?: string;
 

@@ -1,5 +1,7 @@
 import {
   IsArray,
+  ArrayMinSize,
+  ArrayMaxSize,
   IsDateString,
   IsEnum,
   IsInt,
@@ -9,7 +11,9 @@ import {
   Min,
   MinLength,
   IsBoolean,
-  IsString
+  IsString,
+  IsLatitude,
+  IsLongitude
 } from 'class-validator';
 import { HouseType, FeatureType } from '../../../types/index.js';
 import { CreateRentOfferValidationMessage } from './create-rent-offer.messages.js';
@@ -19,9 +23,11 @@ export class CreateRentOfferDto {
   @MaxLength(100, { message: CreateRentOfferValidationMessage.title.maxLength })
   public title: string;
 
-  @MinLength(20, { message: CreateRentOfferValidationMessage.title.minLength })
+  @MinLength(20, {
+    message: CreateRentOfferValidationMessage.description.minLength
+  })
   @MaxLength(1024, {
-    message: CreateRentOfferValidationMessage.title.maxLength
+    message: CreateRentOfferValidationMessage.description.maxLength
   })
   public description: string;
 
@@ -45,6 +51,8 @@ export class CreateRentOfferDto {
     each: true,
     message: CreateRentOfferValidationMessage.image.maxLength
   })
+  @ArrayMinSize(6, { message: CreateRentOfferValidationMessage.images.minSize })
+  @ArrayMaxSize(6, { message: CreateRentOfferValidationMessage.images.maxSize })
   public images: string[];
 
   @IsBoolean({
@@ -78,12 +86,21 @@ export class CreateRentOfferDto {
   @IsArray({
     message: CreateRentOfferValidationMessage.features.invalidFormat
   })
-  @IsEnum(HouseType, {
+  @IsEnum(FeatureType, {
     each: true,
     message: CreateRentOfferValidationMessage.features.invalid
   })
   public features: FeatureType[];
 
-  @IsMongoId({ message: CreateRentOfferValidationMessage.userId.invalidId })
-  public authorId: string;
+  @IsLatitude({
+    message: CreateRentOfferValidationMessage.latitude.invalidFormat
+  })
+  public latitude: number;
+
+  @IsLongitude({
+    message: CreateRentOfferValidationMessage.longitude.invalidFormat
+  })
+  public longitude: number;
+
+  public userId: string;
 }

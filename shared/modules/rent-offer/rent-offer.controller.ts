@@ -1,10 +1,12 @@
 import { Request, Response } from 'express';
 import { StatusCodes } from 'http-status-codes';
+import { DocumentType } from '@typegoose/typegoose';
 import {
   BaseController,
   DocumentExistsMiddleware,
   HttpError,
   HttpMethod,
+  PrivateRouteMiddleware,
   ValidateDtoMiddleware,
   ValidateObjectIdMiddleware
 } from '../../libs/rest/index.js';
@@ -12,7 +14,7 @@ import { inject, injectable } from 'inversify';
 import { Component } from '../../types/index.js';
 import { Logger } from '../../libs/logger/index.js';
 import { fillDTO } from '../../helpers/index.js';
-import { RentOfferRdo } from './rdo/rent-offer.rdo.js';
+import { RentOfferRdo, DetailedRentOfferRdo } from './index.js';
 import { CommentRdo, CommentService } from '../comment/index.js';
 import { RentOfferService } from './rent-offer.service.interface.js';
 import { ParamRentOfferId } from './types/param-rentOfferId.type.js';
@@ -23,6 +25,8 @@ import {
   DEFAULT_NEW_OFFER_COUNT
 } from './rent-offer.constants.js';
 import { CreateRentOfferDto, UpdateRentOfferDto } from './index.js';
+import { FavoriteEntity, FavoriteService } from '../favorite/index.js';
+import { GetRentOffers } from './types/get-rent-offers-request.type.js';
 
 @injectable()
 export default class RentOfferController extends BaseController {
@@ -31,7 +35,9 @@ export default class RentOfferController extends BaseController {
     @inject(Component.RentOfferService)
     private readonly rentOfferService: RentOfferService,
     @inject(Component.CommentService)
-    private readonly commentService: CommentService
+    private readonly commentService: CommentService,
+    @inject(Component.FavoriteService)
+    private readonly favoriteService: FavoriteService
   ) {
     super(logger);
 
@@ -40,20 +46,31 @@ export default class RentOfferController extends BaseController {
       path: '/:rentOfferId',
       method: HttpMethod.Get,
       handler: this.show,
-      middlewares: [new ValidateObjectIdMiddleware('rentOfferId')]
+      middlewares: [
+        new ValidateObjectIdMiddleware('rentOfferId'),
+        new DocumentExistsMiddleware(
+          this.rentOfferService,
+          'RentOffer',
+          'rentOfferId'
+        )
+      ]
     });
     this.addRoute({ path: '/', method: HttpMethod.Get, handler: this.index });
     this.addRoute({
       path: '/',
       method: HttpMethod.Post,
       handler: this.create,
-      middlewares: [new ValidateDtoMiddleware(CreateRentOfferDto)]
+      middlewares: [
+        new PrivateRouteMiddleware(),
+        new ValidateDtoMiddleware(CreateRentOfferDto)
+      ]
     });
     this.addRoute({
       path: '/:rentOfferId',
       method: HttpMethod.Delete,
       handler: this.delete,
       middlewares: [
+        new PrivateRouteMiddleware(),
         new ValidateObjectIdMiddleware('rentOfferId'),
         new DocumentExistsMiddleware(
           this.rentOfferService,
@@ -67,6 +84,7 @@ export default class RentOfferController extends BaseController {
       method: HttpMethod.Patch,
       handler: this.update,
       middlewares: [
+        new PrivateRouteMiddleware(),
         new ValidateObjectIdMiddleware('rentOfferId'),
         new ValidateDtoMiddleware(UpdateRentOfferDto),
         new DocumentExistsMiddleware(
@@ -101,60 +119,109 @@ export default class RentOfferController extends BaseController {
     });
   }
 
-  public async index(_req: Request, resp: Response) {
-    const rentOffers = await this.rentOfferService.find();
+  public async index({ tokenPayload, query }: GetRentOffers, resp: Response) {
+    const { id } = tokenPayload || {};
+
+    const rentOffers = await this.rentOfferService.find(query.limit);
+
+    let favoritesObj: DocumentType<FavoriteEntity> | null;
+
+    if (id) {
+      favoritesObj = await this.favoriteService.findByUserId(id);
+    }
+
+    rentOffers.forEach((offer) => {
+      offer.isFavorite =
+        favoritesObj?.favorites?.some((favOffer) => favOffer.id === offer.id) ||
+        false;
+    });
+
     this.ok(resp, fillDTO(RentOfferRdo, rentOffers));
   }
 
   public async show(
-    { params }: Request<ParamRentOfferId>,
+    { params, tokenPayload }: Request<ParamRentOfferId>,
     res: Response
   ): Promise<void> {
     const { rentOfferId } = params;
+    const { id } = tokenPayload || {};
+
     const offer = await this.rentOfferService.findById(rentOfferId);
 
-    this.ok(res, fillDTO(RentOfferRdo, offer));
+    let isFavorite = false;
+
+    if (id) {
+      isFavorite = await this.favoriteService.isFavorite({
+        userId: id,
+        rentOfferId
+      });
+    }
+
+    offer!.isFavorite = isFavorite;
+
+    this.ok(res, fillDTO(DetailedRentOfferRdo, offer));
   }
 
   public async create(
-    { body }: CreateRentOfferRequest,
+    { body, tokenPayload }: CreateRentOfferRequest,
     res: Response
   ): Promise<void> {
-    const result = await this.rentOfferService.create(body);
+    const result = await this.rentOfferService.create({
+      ...body,
+      userId: tokenPayload.id
+    });
     const offer = await this.rentOfferService.findById(result.id);
     this.created(res, fillDTO(RentOfferRdo, offer));
   }
 
-  public async delete({ params }: Request<ParamRentOfferId>, res: Response) {
+  public async delete(
+    { params, tokenPayload }: Request<ParamRentOfferId>,
+    res: Response
+  ) {
+    const { id } = tokenPayload || {};
     const { rentOfferId } = params;
-    const rentOffer = await this.rentOfferService.deleteById(rentOfferId);
+
+    await this.checkUserIdMatchOfferId(id, rentOfferId);
+
+    const removedOffer = await this.rentOfferService.deleteById(rentOfferId);
 
     await this.commentService.deleteByRentOfferId(rentOfferId);
 
-    this.noContent(res, rentOffer);
+    this.noContent(res, removedOffer);
   }
 
-  public async update({ body, params }: UpdateRentOfferRequest, res: Response) {
+  public async update(
+    { body, params, tokenPayload }: UpdateRentOfferRequest,
+    res: Response
+  ) {
+    const { id } = tokenPayload || {};
+    const { rentOfferId } = params;
+
+    await this.checkUserIdMatchOfferId(id, rentOfferId);
+
     const updatedOffer = await this.rentOfferService.updateById(
       params.rentOfferId,
       body
     );
 
-    this.ok(res, fillDTO(RentOfferRdo, updatedOffer));
+    let isFavorite = false;
+
+    if (id) {
+      isFavorite = await this.favoriteService.isFavorite({
+        userId: id,
+        rentOfferId
+      });
+    }
+
+    updatedOffer!.isFavorite = isFavorite;
+
+    this.ok(res, fillDTO(DetailedRentOfferRdo, updatedOffer));
   }
 
   public async getComments(
     { params }: Request<ParamRentOfferId>,
     res: Response
   ): Promise<void> {
-    if (!(await this.rentOfferService.exists(params.rentOfferId))) {
-      throw new HttpError(
-        StatusCodes.NOT_FOUND,
-        `Rent Offer with id ${params.rentOfferId} not found.`,
-        'RentOfferController'
-      );
-    }
-
     const comments = await this.commentService.findByRentOfferId(
       params.rentOfferId
     );
@@ -173,5 +240,20 @@ export default class RentOfferController extends BaseController {
       DEFAULT_DISCUSSED_OFFER_COUNT
     );
     this.ok(res, fillDTO(RentOfferRdo, discussedOffers));
+  }
+
+  public async checkUserIdMatchOfferId(
+    userId: string,
+    rentOfferId: string
+  ): Promise<void> {
+    const offer = await this.rentOfferService.findById(rentOfferId);
+
+    if (offer?.userId.toString() !== userId) {
+      throw new HttpError(
+        StatusCodes.BAD_REQUEST,
+        'Attemt to modify wrong rent offer',
+        'DefaultRentOfferController'
+      );
+    }
   }
 }
