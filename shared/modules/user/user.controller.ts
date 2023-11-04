@@ -6,10 +6,10 @@ import {
   DocumentExistsMiddleware,
   HttpError,
   HttpMethod,
-  PrivateRouteMiddleware,
   UploadFileMiddleware,
   ValidateDtoMiddleware,
-  ValidateObjectIdMiddleware
+  ValidateObjectIdMiddleware,
+  PrivateRouteMiddleware
 } from '../../libs/rest/index.js';
 import { UserService } from './user.service.interface.js';
 import { Config, RestSchema } from '../../libs/config/index.js';
@@ -80,47 +80,39 @@ export class UserController extends BaseController {
     });
 
     this.addRoute({
-      path: '/:userId/rentOffers/favorite',
+      path: '/rentOffers/favorite',
       method: HttpMethod.Get,
       handler: this.getFavorite,
-      middlewares: [
-        new PrivateRouteMiddleware(),
-        new ValidateObjectIdMiddleware('userId'),
-        new DocumentExistsMiddleware(this.userService, 'User', 'userId')
-      ]
+      middlewares: [new PrivateRouteMiddleware()]
     });
 
     this.addRoute({
-      path: '/:userId/rentOffers/:rentOfferId/favorite',
+      path: '/rentOffers/:rentOfferId/favorite',
       method: HttpMethod.Post,
       handler: this.addFavorite,
       middlewares: [
         new PrivateRouteMiddleware(),
-        new ValidateObjectIdMiddleware('userId'),
         new ValidateObjectIdMiddleware('rentOfferId'),
         new DocumentExistsMiddleware(
           this.rentOfferService,
           'RentOffer',
           'rentOfferId'
-        ),
-        new DocumentExistsMiddleware(this.userService, 'User', 'userId')
+        )
       ]
     });
 
     this.addRoute({
-      path: '/:userId/rentOffers/:rentOfferId/favorite',
+      path: '/rentOffers/:rentOfferId/favorite',
       method: HttpMethod.Delete,
       handler: this.removeFavorite,
       middlewares: [
         new PrivateRouteMiddleware(),
-        new ValidateObjectIdMiddleware('userId'),
         new ValidateObjectIdMiddleware('rentOfferId'),
         new DocumentExistsMiddleware(
           this.rentOfferService,
           'RentOffer',
           'rentOfferId'
-        ),
-        new DocumentExistsMiddleware(this.userService, 'User', 'userId')
+        )
       ]
     });
   }
@@ -182,20 +174,29 @@ export class UserController extends BaseController {
   }
 
   public async getFavorite(
-    { params }: Request<ParamFavoriteReq>,
+    { tokenPayload }: Request,
     res: Response
   ): Promise<void> {
-    const result = await this.favoriteService.findByUserId(params.userId);
+    const { id } = tokenPayload || {};
 
-    this.ok(res, fillDTO(FavoriteRdo, result));
+    const result = await this.favoriteService.findByUserId(id);
+
+    const filledData = fillDTO(FavoriteRdo, result);
+
+    filledData?.favorites?.forEach((item) => (item.isFavorite = true));
+
+    this.ok(res, filledData);
   }
 
   public async addFavorite(
-    { params }: Request<ParamFavoriteReq>,
+    { params, tokenPayload }: Request<ParamFavoriteReq>,
     res: Response
   ): Promise<void> {
+    console.log('addToFavorite');
+    const { id } = tokenPayload || {};
+
     const dublicate = await this.favoriteService.findFavoriteById({
-      userId: params.userId,
+      userId: id,
       rentOfferId: params.rentOfferId
     });
 
@@ -208,19 +209,25 @@ export class UserController extends BaseController {
     }
 
     const result = await this.favoriteService.addToFavorite({
-      userId: params.userId,
+      userId: id,
       rentOfferId: params.rentOfferId
     });
 
-    this.ok(res, fillDTO(FavoriteRdo, result));
+    const filledData = fillDTO(FavoriteRdo, result);
+
+    filledData?.favorites?.forEach((item) => (item.isFavorite = true));
+
+    this.ok(res, filledData);
   }
 
   public async removeFavorite(
-    { params }: Request<ParamFavoriteReq>,
+    { params, tokenPayload }: Request<ParamFavoriteReq>,
     res: Response
   ): Promise<void> {
+    const { id } = tokenPayload || {};
+
     const favoriteObj = await this.favoriteService.findFavoriteById({
-      userId: params.userId,
+      userId: id,
       rentOfferId: params.rentOfferId
     });
 
@@ -233,10 +240,14 @@ export class UserController extends BaseController {
     }
 
     const result = await this.favoriteService.removeFromFavorite({
-      userId: params.userId,
+      userId: id,
       rentOfferId: params.rentOfferId
     });
 
-    this.ok(res, fillDTO(FavoriteRdo, result));
+    const filledData = fillDTO(FavoriteRdo, result);
+
+    filledData?.favorites?.forEach((item) => (item.isFavorite = true));
+
+    this.ok(res, filledData);
   }
 }
