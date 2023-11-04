@@ -26,7 +26,7 @@ export class FavoriteEntity extends defaultClasses.TimeStamps {
   public userId: Ref<UserEntity>;
 
   @prop({
-    ref: RentOfferEntity,
+    ref: 'RentOfferEntity',
     required: true,
     default: []
   })

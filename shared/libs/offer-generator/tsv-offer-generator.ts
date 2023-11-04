@@ -38,7 +38,7 @@ export class TSVOfferGenerator implements OfferGenerator {
     const city = getRandomItem<City>(this.mockData.cities);
     const description = getRandomItem<string>(this.mockData.descriptions);
     const preview = getRandomItem<string>(this.mockData.previewImages);
-    const images = getRandomItems<string>(this.mockData.galleryImages);
+    const images = getRandomItems<string>(this.mockData.galleryImages, 6);
     const features = getRandomItems<string>([
       FeatureType.AirCond,
       FeatureType.BabySeat,
@@ -55,21 +55,24 @@ export class TSVOfferGenerator implements OfferGenerator {
       HouseType.Room
     ]);
     const isPremium = getRandomItem<boolean>(BOOLEAN_STATES);
-    const isFavourite = getRandomItem<boolean>(BOOLEAN_STATES);
+    const isFavorite = getRandomItem<boolean>(BOOLEAN_STATES);
     const price = generateRandomValue(MIN_PRICE, MAX_PRICE).toString();
     const rooms = generateRandomValue(MIN_ROOMS, MAX_ROOMS).toString();
     const guests = generateRandomValue(MIN_GUESTS, MAX_GUESTS).toString();
     const rating = generateRandomValue(MIN_RATING, MAX_RATING, 1).toString();
-    const author = getRandomItem<string>(this.mockData.authors);
+    const user = getRandomItem<string>(this.mockData.users);
     const email = getRandomItem<string>(this.mockData.emails);
     const avatarPath = getRandomItem<string>(this.mockData.avatars);
     const commentCount = generateRandomValue(0, 50);
+
+    const offerLatitude = generateRandomValue(0, 50);
+    const offerLongitude = generateRandomValue(0, 50);
 
     const publishedDate = dayjs()
       .subtract(generateRandomValue(FIRST_WEEK_DAY, LAST_WEEK_DAY), 'day')
       .toISOString();
 
-    const [firstName, lastName] = author.split(' ');
+    const [firstName, lastName] = user.split(' ');
 
     const userType = getRandomItem<string>([UserType.Pro, UserType.Usual]);
 
@@ -94,10 +97,12 @@ export class TSVOfferGenerator implements OfferGenerator {
       lastName,
       email,
       isPremium,
-      isFavourite,
+      isFavorite,
       avatarPath,
       userType,
-      commentCount
+      commentCount,
+      offerLatitude,
+      offerLongitude
     ].join('\t');
   }
 }
