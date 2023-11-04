@@ -42,8 +42,14 @@ export class DefaultRentOfferService implements RentOfferService {
     return result;
   }
 
-  public async find(): Promise<DocumentType<RentOfferEntity>[]> {
-    return this.rentOfferModel.find().populate(['userId', 'cityId']).exec();
+  public async find(count?: number): Promise<DocumentType<RentOfferEntity>[]> {
+    const limit = count ?? DEFAULT_OFFER_COUNT;
+    return this.rentOfferModel
+      .find()
+      .sort({ createdAt: SortType.Down })
+      .populate(['userId', 'cityId'])
+      .limit(limit)
+      .exec();
   }
 
   public async findById(

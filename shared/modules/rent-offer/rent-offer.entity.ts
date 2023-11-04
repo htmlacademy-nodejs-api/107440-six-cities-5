@@ -45,7 +45,7 @@ export class RentOfferEntity extends defaultClasses.TimeStamps {
   public isPremium!: boolean;
 
   @prop({ default: false })
-  public isFavorite!: boolean;
+  public isFavorite?: boolean;
 
   @prop()
   public rating!: number;
@@ -79,6 +79,12 @@ export class RentOfferEntity extends defaultClasses.TimeStamps {
 
   @prop({ default: 0 })
   public commentCount!: number;
+
+  @prop({ required: true })
+  public latitude!: number;
+
+  @prop({ required: true })
+  public longitude!: number;
 }
 
 export const RentOfferModel = getModelForClass(RentOfferEntity);

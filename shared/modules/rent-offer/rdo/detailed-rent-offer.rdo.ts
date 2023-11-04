@@ -52,4 +52,10 @@ export class DetailedRentOfferRdo {
   @Expose({ name: 'userId' })
   @Type(() => UserRdo)
   public user: UserRdo;
+
+  @Expose()
+  public latitude: number;
+
+  @Expose()
+  public longitude: number;
 }

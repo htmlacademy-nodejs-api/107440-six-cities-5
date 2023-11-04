@@ -1,66 +1,63 @@
 ## Get the rent offer by id
-GET http://localhost:4000/rentOffers/6543e5d6b2dfb897f0c005d7 HTTP/1.1
+GET http://localhost:4000/rentOffers/65464c1b76a5aa758fc54245 HTTP/1.1
 Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJlbWFpbCI6Imt1cnQuY29iYWluQGdtYWlsLmNvbSIsImZpcnN0TmFtZSI6Ikt1cnQiLCJsYXN0TmFtZSI6IkNvYmFpbiIsImlkIjoiNjU0M2U3MzlhMWM0YzU1NGJmYjEwNjNiIiwiaWF0IjoxNjk4OTQ5MDA5LCJleHAiOjE2OTkxMjE4MDl9.n3YH8RvZO6PJ-jdc-3sKjSDvfaCDb4YduZUpD9yihZ4
-
 
 ###
 ## Get the list of rent offers
-GET http://localhost:4000/rentOffers HTTP/1.1
+GET http://localhost:4000/rentOffers?limit=2 HTTP/1.1
 Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJlbWFpbCI6Imt1cnQuY29iYWluQGdtYWlsLmNvbSIsImZpcnN0TmFtZSI6Ikt1cnQiLCJsYXN0TmFtZSI6IkNvYmFpbiIsImlkIjoiNjU0M2U3MzlhMWM0YzU1NGJmYjEwNjNiIiwiaWF0IjoxNjk4OTQ5MDA5LCJleHAiOjE2OTkxMjE4MDl9.n3YH8RvZO6PJ-jdc-3sKjSDvfaCDb4YduZUpD9yihZ4
 
 ###
 ## Create new offer
 POST http://localhost:4000/rentOffers HTTP/1.1
-Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJlbWFpbCI6Imt1cnQuY29iYWluQGdtYWlsLmNvbSIsImZpcnN0TmFtZSI6Ikt1cnQiLCJsYXN0TmFtZSI6IkNvYmFpbiIsImlkIjoiNjU0M2U3MzlhMWM0YzU1NGJmYjEwNjNiIiwiaWF0IjoxNjk4OTQ5MDA5LCJleHAiOjE2OTkxMjE4MDl9.n3YH8RvZO6PJ-jdc-3sKjSDvfaCDb4YduZUpD9yihZ4
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJlbWFpbCI6Imt1cnQuY29iYWluQGdtYWlsLmNvbSIsImZpcnN0TmFtZSI6Ikt1cnQiLCJsYXN0TmFtZSI6IkNvYmFpbiIsImlkIjoiNjU0M2U3MzlhMWM0YzU1NGJmYjEwNjNiIiwiaWF0IjoxNjk5MTI2MTAxLCJleHAiOjE2OTkyOTg5MDF9.Y-MrAysaDrm-NhCA7ZBPolQ57jzKCgQoWtqkLgO9OJU
 Content-Type: application/json
 
 {
-  "title": "Kurt Chris Dave",
-  "description": "Nirvana Nirvana description",
+  "title": "Cool offer ever",
+  "description": "Cool offer ever description description",
   "publishDate": "2022-08-12T11:56:37.573Z",
-  "preview": "band-preview.png",
-  "images": ["image1.jpg", "image2.jpg"],
+  "preview": "cool-preview.png",
+  "images": ["image1.jpg", "image2.jpg", "image3.jpg", "image4.jpg", "image5.jpg", "image6.jpg"],
   "isPremium": false,
   "isFavorite": false,
   "rating": 5,
   "rooms": 1,
-  "guests": 1,
-  "houseType": "House",
+  "guests": 2,
+  "houseType": "Room",
   "price": 150,
-  "features": ["Washer", "Air conditioning", "Breakfast"],
-  "userId": "6543e739a1c4c554bfb1063b",
-  "cityId": "652c4d7bdbb8c5afbade2be0"
+  "features": ["Breakfast"],
+  "cityId": "652c4d099cfb7741494f0d83",
+  "latitude": 51.509865,
+  "longitude": -0.118092
 }
 
 ###
-
-###
 ## Delete rent offer by id
-DELETE http://localhost:4000/rentOffers/111c5693a131ff6e3e8e4f96 HTTP/1.1
+DELETE http://localhost:4000/rentOffers/65469c4f89323f1e838e2e3e HTTP/1.1
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJlbWFpbCI6ImpvaG4ubGVubm9uQGdtYWlsLmNvbSIsImZpcnN0TmFtZSI6IkpvaG4iLCJsYXN0TmFtZSI6Ikxlbm5vbiIsImlkIjoiNjU0MjRhNmZhYWZjYjE1OWE1MGVmMzg5IiwiaWF0IjoxNjk5MTI2Mzc5LCJleHAiOjE2OTkyOTkxNzl9.xjo7uI8L2ZnnsmgIp4gT7chT9xLmewnIu7gK0ori1Xk
 
 ###
 ## Update rent offer by id
-PATCH http://localhost:4000/rentOffers/652c5693a131ff6e3e8e4f96 HTTP/1.1
+PATCH http://localhost:4000/rentOffers/654693e4bf739f018e98ab4c HTTP/1.1
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJlbWFpbCI6ImpvaG4ubGVubm9uQGdtYWlsLmNvbSIsImZpcnN0TmFtZSI6IkpvaG4iLCJsYXN0TmFtZSI6Ikxlbm5vbiIsImlkIjoiNjU0MjRhNmZhYWZjYjE1OWE1MGVmMzg5IiwiaWF0IjoxNjk5MTI0MTgwLCJleHAiOjE2OTkyOTY5ODB9.hdhIM9FcpN_emsXej_4gLl2_fJ7LNg3PtMZ6QStfhEA
 Content-Type: application/json
 
 {
-  "title": "Updated title",
-  "description": "Updated description",
-  "price": 999
+  "isPremium": true
 }
 
 ###
 ## Get rent offers from a specific city
-GET http://localhost:4000/cities/652c4d7bdbb8c5afbade2be0/rentOffers?limit=10 HTTP/1.1
+GET http://localhost:4000/cities/652c4d099cfb7741494f0d83/rentOffers?limit=10 HTTP/1.1
 
 ###
 ## Get premium rent offers from a specific city
-
-GET http://localhost:4000/cities/652c4d7bdbb8c5afbade2be0/rentOffers/premium HTTP/1.1
+GET http://localhost:4000/cities/652c4d099cfb7741494f0d83/rentOffers/premium HTTP/1.1
 
 ###
 ## Get list of comments to a specifit rent offer
-GET http://localhost:4000/rentOffers/628a27d729c45f2bf9f6806a/comments HTTP/1.1
+GET http://localhost:4000/rentOffers/65464c1b76a5aa758fc54245/comments HTTP/1.1
 
 ###
 
