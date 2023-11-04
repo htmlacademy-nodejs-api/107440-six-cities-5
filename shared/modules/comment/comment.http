@@ -2,12 +2,13 @@
 ## Create a new comment
 
 POST http://localhost:4000/comments HTTP/1.1
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJlbWFpbCI6ImpvaG4ubGVubm9uQGdtYWlsLmNvbSIsImZpcnN0TmFtZSI6IkpvaG4iLCJsYXN0TmFtZSI6Ikxlbm5vbiIsImlkIjoiNjU0MjRhNmZhYWZjYjE1OWE1MGVmMzg5IiwiaWF0IjoxNjk5MTIyODEwLCJleHAiOjE2OTkyOTU2MTB9.xpHUJ0ddG2GplaKs_Ukt806kk2Eyx1mmE8NPErMC6Bc
 Content-Type: application/json
 
 {
-  "text": "Test comment text blah blah blah",
-  "rentOfferId": "628a27d729c45f2bf9f6806a",
-  "userId": "628a27d729c45f2bf9f67ff2"
+  "text": "The second comment text",
+  "rentOfferId": "65464c1b76a5aa758fc54245",
+  "rating": 2
 }
 
 ###

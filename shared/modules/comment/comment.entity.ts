@@ -20,17 +20,7 @@ export interface CommentEntity extends defaultClasses.Base {}
 export class CommentEntity extends defaultClasses.TimeStamps {
   @prop({
     trim: true,
-    required: true,
-    validate: [
-      {
-        validator: (v: string) => v.length <= 5,
-        message: 'Comment text is less than 5 characters!'
-      },
-      {
-        validator: (v: string) => v.length >= 1024,
-        message: 'Comment text is over 1024 characters!'
-      }
-    ]
+    required: true
   })
   public text: string;
 
