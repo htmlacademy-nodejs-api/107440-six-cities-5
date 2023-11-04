@@ -1,5 +1,6 @@
 import { inject, injectable } from 'inversify';
 import { Request, Response } from 'express';
+import { DocumentType } from '@typegoose/typegoose';
 import { StatusCodes } from 'http-status-codes';
 import {
   BaseController,
@@ -25,6 +26,7 @@ import {
   RentOfferService,
   MAX_PREMIUM_OFFERS_COUNT
 } from '../rent-offer/index.js';
+import { FavoriteEntity, FavoriteService } from '../favorite/index.js';
 
 @injectable()
 export class CityController extends BaseController {
@@ -33,7 +35,9 @@ export class CityController extends BaseController {
     @inject(Component.CityService)
     private readonly cityService: CityService,
     @inject(Component.RentOfferService)
-    private readonly rentOfferService: RentOfferService
+    private readonly rentOfferService: RentOfferService,
+    @inject(Component.FavoriteService)
+    private readonly favoriteService: FavoriteService
   ) {
     super(logger);
 
@@ -96,24 +100,54 @@ export class CityController extends BaseController {
   }
 
   public async getRentOffersFromCity(
-    { params, query }: GetRentOffersFromCity,
+    { params, query, tokenPayload }: GetRentOffersFromCity,
     res: Response
   ): Promise<void> {
+    const { id } = tokenPayload || {};
+
     const offers = await this.rentOfferService.findByCityId(
       params.cityId,
       query.limit
     );
+
+    let favoritesObj: DocumentType<FavoriteEntity> | null;
+
+    if (id) {
+      favoritesObj = await this.favoriteService.findByUserId(id);
+    }
+
+    offers.forEach((offer) => {
+      offer.isFavorite =
+        favoritesObj?.favorites?.some((favOffer) => favOffer.id === offer.id) ||
+        false;
+    });
+
     this.ok(res, fillDTO(RentOfferRdo, offers));
   }
 
   public async getPremiumRentOffersFromCity(
-    { params }: GetPremiumRentOffersFromCity,
+    { params, tokenPayload }: GetPremiumRentOffersFromCity,
     res: Response
   ): Promise<void> {
-    const offers = await this.rentOfferService.findPremiumByCityId(
+    const { id } = tokenPayload || {};
+
+    const rentOffers = await this.rentOfferService.findPremiumByCityId(
       params.cityId,
       MAX_PREMIUM_OFFERS_COUNT
     );
-    this.ok(res, fillDTO(RentOfferRdo, offers));
+
+    let favoritesObj: DocumentType<FavoriteEntity> | null;
+
+    if (id) {
+      favoritesObj = await this.favoriteService.findByUserId(id);
+    }
+
+    rentOffers.forEach((offer) => {
+      offer.isFavorite =
+        favoritesObj?.favorites?.some((favOffer) => favOffer.id === offer.id) ||
+        false;
+    });
+
+    this.ok(res, fillDTO(RentOfferRdo, rentOffers));
   }
 }
