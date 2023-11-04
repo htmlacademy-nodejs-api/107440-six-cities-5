@@ -4,7 +4,6 @@ import { FavoriteService } from './favorite.service.interface.js';
 import { Component } from '../../types/index.js';
 import { FavoriteEntity } from './favorite.entity.js';
 import { CreateFavoriteDto } from './dto/create-favorite.dto.js';
-import { RentOfferEntity } from '../rent-offer/index.js';
 
 @injectable()
 export class DefaultFavoriteService implements FavoriteService {
@@ -78,49 +77,6 @@ export class DefaultFavoriteService implements FavoriteService {
         populate: { path: 'cityId', model: 'CityEntity' }
       })
       .exec();
-  }
-
-  public async findAll(): Promise<DocumentType<RentOfferEntity>[]> {
-    const pipeline = [
-      {
-        $unwind: '$favorites'
-      },
-      {
-        $lookup: {
-          from: 'rentOffers',
-          localField: 'favorites',
-          foreignField: '_id',
-          as: 'rentOffer'
-        }
-      },
-      {
-        $unwind: '$rentOffer'
-      },
-      {
-        $lookup: {
-          from: 'cities',
-          localField: 'rentOffer.cityId',
-          foreignField: '_id',
-          as: 'rentOffer.cityId'
-        }
-      },
-      {
-        $unwind: '$rentOffer.cityId'
-      },
-      {
-        $group: {
-          _id: '$rentOffer._id',
-          rentOffer: { $first: '$rentOffer' }
-        }
-      },
-      {
-        $replaceRoot: { newRoot: '$rentOffer' }
-      }
-    ];
-
-    const result = await this.favoriteModel.aggregate(pipeline).exec();
-
-    return result;
   }
 
   public async isFavorite(dto: CreateFavoriteDto): Promise<boolean> {
