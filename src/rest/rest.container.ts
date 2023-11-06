@@ -13,7 +13,9 @@ import {
 } from '../../shared/libs/database-client/index.js';
 import {
   AppExceptionFilter,
-  ExceptionFilter
+  ExceptionFilter,
+  ValidationExceptionFilter,
+  HttpErrorExceptionFilter
 } from '../../shared/libs/rest/index.js';
 
 export function createRestApplicationContainer() {
@@ -38,6 +40,14 @@ export function createRestApplicationContainer() {
   restApplicationContainer
     .bind<ExceptionFilter>(Component.ExceptionFilter)
     .to(AppExceptionFilter)
+    .inSingletonScope();
+  restApplicationContainer
+    .bind<ExceptionFilter>(Component.HttpExceptionFilter)
+    .to(HttpErrorExceptionFilter)
+    .inSingletonScope();
+  restApplicationContainer
+    .bind<ExceptionFilter>(Component.ValidationExceptionFilter)
+    .to(ValidationExceptionFilter)
     .inSingletonScope();
 
   return restApplicationContainer;

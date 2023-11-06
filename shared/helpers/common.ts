@@ -28,12 +28,8 @@ export function getRandomItem<T>(items: T[]): T {
   return items[generateRandomValue(0, items.length - 1)];
 }
 
-export function getErrorMessage(
-  errorType: ApplicationError,
-  error: string,
-  details: ValidationErrorField[] = []
-) {
-  return { errorType, error, details };
+export function getErrorMessage(error: unknown): string {
+  return error instanceof Error ? error.message : '';
 }
 
 export function fillDTO<T, V>(someDto: ClassConstructor<T>, plainObject: V) {
@@ -42,10 +38,12 @@ export function fillDTO<T, V>(someDto: ClassConstructor<T>, plainObject: V) {
   });
 }
 
-export function createErrorObject(message: string) {
-  return {
-    error: message
-  };
+export function createErrorObject(
+  errorType: ApplicationError,
+  error: string,
+  details: ValidationErrorField[] = []
+) {
+  return { errorType, error, details };
 }
 
 export function reduceValidationErrors(
