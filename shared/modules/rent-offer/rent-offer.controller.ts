@@ -151,7 +151,7 @@ export default class RentOfferController extends BaseController {
         new ValidateObjectIdMiddleware('rentOfferId'),
         new UploadMutlipleFilesMiddleware(
           this.configService.get('UPLOAD_DIRECTORY'),
-          'images',
+          'galleryImages',
           MAX_OFFER_IMAGES
         ),
         new DocumentExistsMiddleware(
@@ -287,13 +287,13 @@ export default class RentOfferController extends BaseController {
   }
 
   public async uploadPreview(
-    { params, file, tokenPayload }: Request<ParamRentOfferId>,
+    { params, file }: Request<ParamRentOfferId>,
     res: Response
   ) {
-    const { id } = tokenPayload || {};
+    //const { id } = tokenPayload || {};
     const { rentOfferId } = params;
 
-    await this.checkUserIdMatchOfferId(id, rentOfferId);
+    //await this.checkUserIdMatchOfferId(id, rentOfferId);
 
     const updateDto = { preview: file?.filename };
     await this.rentOfferService.updateById(rentOfferId, updateDto);
@@ -301,7 +301,7 @@ export default class RentOfferController extends BaseController {
   }
 
   public async uploadGalleryImages(
-    { params, files, tokenPayload }: Request<ParamRentOfferId>,
+    { files, params, tokenPayload }: Request<ParamRentOfferId>,
     res: Response
   ) {
     const { id } = tokenPayload || {};
