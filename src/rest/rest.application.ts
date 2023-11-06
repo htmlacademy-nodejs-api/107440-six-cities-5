@@ -80,14 +80,12 @@ export class RestApplication {
     this.server.use(
       this.authExceptionFilter.catch.bind(this.authExceptionFilter)
     );
-
     this.server.use(
       this.validationExceptionFilter.catch.bind(this.validationExceptionFilter)
     );
     this.server.use(
       this.httpExceptionFilter.catch.bind(this.httpExceptionFilter)
     );
-
     this.server.use(
       this.appExceptionFilter.catch.bind(this.appExceptionFilter)
     );
