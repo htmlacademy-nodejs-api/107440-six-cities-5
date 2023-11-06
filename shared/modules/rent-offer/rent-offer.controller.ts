@@ -7,6 +7,7 @@ import {
   HttpError,
   HttpMethod,
   PrivateRouteMiddleware,
+  UploadFileMiddleware,
   ValidateDtoMiddleware,
   ValidateObjectIdMiddleware
 } from '../../libs/rest/index.js';
@@ -27,6 +28,8 @@ import {
 import { CreateRentOfferDto, UpdateRentOfferDto } from './index.js';
 import { FavoriteEntity, FavoriteService } from '../favorite/index.js';
 import { GetRentOffers } from './types/get-rent-offers-request.type.js';
+import { Config, RestSchema } from '../../libs/config/index.js';
+import { UploadPreviewRdo } from './rdo/upload-preview.rdo.js';
 
 @injectable()
 export default class RentOfferController extends BaseController {
@@ -37,7 +40,8 @@ export default class RentOfferController extends BaseController {
     @inject(Component.CommentService)
     private readonly commentService: CommentService,
     @inject(Component.FavoriteService)
-    private readonly favoriteService: FavoriteService
+    private readonly favoriteService: FavoriteService,
+    @inject(Component.Config) private readonly configService: Config<RestSchema>
   ) {
     super(logger);
 
@@ -116,6 +120,24 @@ export default class RentOfferController extends BaseController {
       path: '/bundles/discussed',
       method: HttpMethod.Get,
       handler: this.getDiscussed
+    });
+    this.addRoute({
+      path: '/:rentOfferId/preview',
+      method: HttpMethod.Post,
+      handler: this.uploadPreview,
+      middlewares: [
+        new PrivateRouteMiddleware(),
+        new ValidateObjectIdMiddleware('rentOfferId'),
+        new UploadFileMiddleware(
+          this.configService.get('UPLOAD_DIRECTORY'),
+          'image'
+        ),
+        new DocumentExistsMiddleware(
+          this.rentOfferService,
+          'RentOffer',
+          'rentOfferId'
+        )
+      ]
     });
   }
 
@@ -240,6 +262,20 @@ export default class RentOfferController extends BaseController {
       DEFAULT_DISCUSSED_OFFER_COUNT
     );
     this.ok(res, fillDTO(RentOfferRdo, discussedOffers));
+  }
+
+  public async uploadPreview(
+    { params, file, tokenPayload }: Request<ParamRentOfferId>,
+    res: Response
+  ) {
+    const { id } = tokenPayload || {};
+    const { rentOfferId } = params;
+
+    await this.checkUserIdMatchOfferId(id, rentOfferId);
+
+    const updateDto = { preview: file?.filename };
+    await this.rentOfferService.updateById(rentOfferId, updateDto);
+    this.created(res, fillDTO(UploadPreviewRdo, updateDto));
   }
 
   public async checkUserIdMatchOfferId(
