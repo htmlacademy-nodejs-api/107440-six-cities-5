@@ -7,6 +7,7 @@ import { DatabaseClient } from '../../shared/libs/database-client/index.js';
 import { getMongoURI, getFullServerPath } from '../../shared/helpers/index.js';
 import { Controller, ExceptionFilter } from '../../shared/libs/rest/index.js';
 import { ParseTokenMiddleware } from '../../shared/libs/rest/middleware/parse-token.middleware.js';
+import { STATIC_FILES_ROUTE, STATIC_UPLOAD_ROUTE } from './rest.constants.js';
 
 @injectable()
 export class RestApplication {
@@ -68,7 +69,7 @@ export class RestApplication {
 
     this.server.use(express.json());
     this.server.use(
-      '/upload',
+      STATIC_UPLOAD_ROUTE,
       express.static(this.config.get('UPLOAD_DIRECTORY'))
     );
     this.server.use(
@@ -76,7 +77,7 @@ export class RestApplication {
     );
 
     this.server.use(
-      '/static',
+      STATIC_FILES_ROUTE,
       express.static(this.config.get('STATIC_DIRECTORY_PATH'))
     );
   }
