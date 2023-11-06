@@ -29,6 +29,7 @@ import {
   FavoriteRdo,
   ParamFavoriteReq
 } from '../favorite/index.js';
+import { UploadUserAvatarRdo } from './rdo/upload.user.avatar.rdo.js';
 
 @injectable()
 export class UserController extends BaseController {
@@ -147,10 +148,14 @@ export class UserController extends BaseController {
     this.ok(res, Object.assign(responseData, { token }));
   }
 
-  public async uploadAvatar(req: Request, res: Response) {
-    this.created(res, {
-      filepath: req.file?.path
-    });
+  public async uploadAvatar({ params, file }: Request, res: Response) {
+    const { userId } = params;
+    const uploadFile = { avatarPath: file?.filename };
+    await this.userService.updateById(userId, uploadFile);
+    this.created(
+      res,
+      fillDTO(UploadUserAvatarRdo, { filepath: uploadFile.avatarPath })
+    );
   }
 
   public async checkAuthenticate(
