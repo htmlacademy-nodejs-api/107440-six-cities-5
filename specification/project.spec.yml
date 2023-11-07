@@ -354,6 +354,52 @@ paths:
                 schema:
                   $ref: '#/components/schemas/comment'
 
+  /rentOffers/{offerId}/preview:
+    post:
+      tags:
+        - rentOffers
+      summary: Upload preview image
+      description: Uploads an preview image for a specific offer. The image should be in `png` or `jpg` format.
+
+      parameters:
+        - in: query
+          name: offerId
+          required: true
+          schema:
+            type: integer
+          description: Unique idetifier of a rent offer
+
+      responses:
+        "201":
+            description: Object with single preview image.
+            content:
+              application/json:
+                schema:
+                  $ref: '#/components/schemas/offerPreviewImage'
+
+  /rentOffers/{offerId}/images:
+    post:
+      tags:
+        - rentOffers
+      summary: Upload gallery images
+      description: Uploads gallery images for a specific offer (always 6 images). The image should be in `png` or `jpg` format.
+
+      parameters:
+        - in: query
+          name: offerId
+          required: true
+          schema:
+            type: integer
+          description: Unique idetifier of a rent offer
+
+      responses:
+        "201":
+            description: Array of images.
+            content:
+              application/json:
+                schema:
+                  $ref: '#/components/schemas/offerGalleryImages'
+
   /comments:
     post:
       tags:
@@ -811,3 +857,19 @@ components:
           token:
             type: string
             example: 123bcv!87KL
+
+    offerGalleryImages:
+        type: object
+
+        properties:
+          images:
+            type: array
+            items:
+              type: string
+
+    offerPreviewImage:
+        type: object
+
+        properties:
+          preview:
+            type: string

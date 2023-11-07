@@ -287,13 +287,13 @@ export default class RentOfferController extends BaseController {
   }
 
   public async uploadPreview(
-    { params, file }: Request<ParamRentOfferId>,
+    { params, file, tokenPayload }: Request<ParamRentOfferId>,
     res: Response
   ) {
-    //const { id } = tokenPayload || {};
+    const { id } = tokenPayload || {};
     const { rentOfferId } = params;
 
-    //await this.checkUserIdMatchOfferId(id, rentOfferId);
+    await this.checkUserIdMatchOfferId(id, rentOfferId);
 
     const updateDto = { preview: file?.filename };
     await this.rentOfferService.updateById(rentOfferId, updateDto);
