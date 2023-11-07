@@ -7,6 +7,8 @@ import {
   HttpError,
   HttpMethod,
   PrivateRouteMiddleware,
+  UploadFileMiddleware,
+  UploadMutlipleFilesMiddleware,
   ValidateDtoMiddleware,
   ValidateObjectIdMiddleware
 } from '../../libs/rest/index.js';
@@ -22,11 +24,15 @@ import { CreateRentOfferRequest } from './types/create-rent-offer-request.type.j
 import { UpdateRentOfferRequest } from './types/update-rent-offer-request.type.js';
 import {
   DEFAULT_DISCUSSED_OFFER_COUNT,
-  DEFAULT_NEW_OFFER_COUNT
+  DEFAULT_NEW_OFFER_COUNT,
+  MAX_OFFER_IMAGES
 } from './rent-offer.constants.js';
 import { CreateRentOfferDto, UpdateRentOfferDto } from './index.js';
 import { FavoriteEntity, FavoriteService } from '../favorite/index.js';
 import { GetRentOffers } from './types/get-rent-offers-request.type.js';
+import { Config, RestSchema } from '../../libs/config/index.js';
+import { UploadPreviewRdo } from './rdo/upload-preview.rdo.js';
+import { UploadImagesRdo } from './rdo/upload-images.rdo.js';
 
 @injectable()
 export default class RentOfferController extends BaseController {
@@ -37,7 +43,8 @@ export default class RentOfferController extends BaseController {
     @inject(Component.CommentService)
     private readonly commentService: CommentService,
     @inject(Component.FavoriteService)
-    private readonly favoriteService: FavoriteService
+    private readonly favoriteService: FavoriteService,
+    @inject(Component.Config) private readonly configService: Config<RestSchema>
   ) {
     super(logger);
 
@@ -116,6 +123,43 @@ export default class RentOfferController extends BaseController {
       path: '/bundles/discussed',
       method: HttpMethod.Get,
       handler: this.getDiscussed
+    });
+    this.addRoute({
+      path: '/:rentOfferId/preview',
+      method: HttpMethod.Post,
+      handler: this.uploadPreview,
+      middlewares: [
+        new PrivateRouteMiddleware(),
+        new ValidateObjectIdMiddleware('rentOfferId'),
+        new UploadFileMiddleware(
+          this.configService.get('UPLOAD_DIRECTORY'),
+          'preview'
+        ),
+        new DocumentExistsMiddleware(
+          this.rentOfferService,
+          'RentOffer',
+          'rentOfferId'
+        )
+      ]
+    });
+    this.addRoute({
+      path: '/:rentOfferId/images',
+      method: HttpMethod.Post,
+      handler: this.uploadGalleryImages,
+      middlewares: [
+        new PrivateRouteMiddleware(),
+        new ValidateObjectIdMiddleware('rentOfferId'),
+        new UploadMutlipleFilesMiddleware(
+          this.configService.get('UPLOAD_DIRECTORY'),
+          'galleryImages',
+          MAX_OFFER_IMAGES
+        ),
+        new DocumentExistsMiddleware(
+          this.rentOfferService,
+          'RentOffer',
+          'rentOfferId'
+        )
+      ]
     });
   }
 
@@ -240,6 +284,57 @@ export default class RentOfferController extends BaseController {
       DEFAULT_DISCUSSED_OFFER_COUNT
     );
     this.ok(res, fillDTO(RentOfferRdo, discussedOffers));
+  }
+
+  public async uploadPreview(
+    { params, file }: Request<ParamRentOfferId>,
+    res: Response
+  ) {
+    //const { id } = tokenPayload || {};
+    const { rentOfferId } = params;
+
+    //await this.checkUserIdMatchOfferId(id, rentOfferId);
+
+    const updateDto = { preview: file?.filename };
+    await this.rentOfferService.updateById(rentOfferId, updateDto);
+    this.created(res, fillDTO(UploadPreviewRdo, updateDto));
+  }
+
+  public async uploadGalleryImages(
+    { files, params, tokenPayload }: Request<ParamRentOfferId>,
+    res: Response
+  ) {
+    const { id } = tokenPayload || {};
+    const { rentOfferId } = params;
+
+    await this.checkUserIdMatchOfferId(id, rentOfferId);
+
+    if (!Array.isArray(files)) {
+      throw new HttpError(
+        StatusCodes.BAD_REQUEST,
+        'Invalid input data for rent offer files',
+        'DefaultRentOfferController'
+      );
+    }
+
+    const imageFilenames: string[] = [];
+
+    if (files && files.length > 0) {
+      for (const file of files) {
+        imageFilenames.push(file.filename);
+      }
+
+      const updateDto = { images: imageFilenames };
+      await this.rentOfferService.updateById(rentOfferId, updateDto);
+
+      this.created(res, fillDTO(UploadImagesRdo, updateDto));
+    } else {
+      throw new HttpError(
+        StatusCodes.BAD_REQUEST,
+        'No images were found to upload',
+        'DefaultRentOfferController'
+      );
+    }
   }
 
   public async checkUserIdMatchOfferId(

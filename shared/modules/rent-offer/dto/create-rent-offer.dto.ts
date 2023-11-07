@@ -11,7 +11,6 @@ import {
   Min,
   MinLength,
   IsBoolean,
-  IsString,
   IsLatitude,
   IsLongitude
 } from 'class-validator';
@@ -39,10 +38,6 @@ export class CreateRentOfferDto {
 
   @IsMongoId({ message: CreateRentOfferValidationMessage.cityId.invalidId })
   public cityId: string;
-
-  @IsString({ message: CreateRentOfferValidationMessage.image.invalidFormat })
-  @MaxLength(256, { message: CreateRentOfferValidationMessage.image.maxLength })
-  public preview: string;
 
   @IsArray({
     message: CreateRentOfferValidationMessage.images.invalidFormat

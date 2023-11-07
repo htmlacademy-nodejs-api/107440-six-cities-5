@@ -1,3 +1,5 @@
+import { MAX_OFFER_IMAGES } from '../rent-offer.constants.js';
+
 export const UpdateRentOfferMessage = {
   title: {
     minLength: 'Minimum title length must be 10',
@@ -46,7 +48,8 @@ export const UpdateRentOfferMessage = {
     maxValue: 'Maximum rating is 5'
   },
   images: {
-    invalidFormat: 'Field images must be an array'
+    invalidFormat: 'Field images must be an array',
+    limit: `Array should have ${MAX_OFFER_IMAGES} images`
   },
   cityId: {
     invalidId: 'cityId field must be a valid id'

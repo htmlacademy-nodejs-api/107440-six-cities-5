@@ -10,10 +10,13 @@ import {
   Min,
   IsArray,
   IsBoolean,
-  MinLength
+  MinLength,
+  ArrayMinSize,
+  ArrayMaxSize
 } from 'class-validator';
 import { UpdateRentOfferMessage } from './update-rent-offer.messages.js';
 import { HouseType, FeatureType } from '../../../types/index.js';
+import { MAX_OFFER_IMAGES } from '../rent-offer.constants.js';
 
 export class UpdateRentOfferDto {
   @IsOptional()
@@ -45,11 +48,17 @@ export class UpdateRentOfferDto {
   @IsArray({
     message: UpdateRentOfferMessage.images.invalidFormat
   })
+  @ArrayMinSize(MAX_OFFER_IMAGES, {
+    message: UpdateRentOfferMessage.images.limit
+  })
+  @ArrayMaxSize(MAX_OFFER_IMAGES, {
+    message: UpdateRentOfferMessage.images.limit
+  })
   @MaxLength(256, {
     each: true,
     message: UpdateRentOfferMessage.image.maxLength
   })
-  public images?: string;
+  public images?: string[];
 
   @IsOptional()
   @IsBoolean({
